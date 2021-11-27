@@ -3,14 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/material": "^5.2.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "express": "^4.17.1",
+    "lodash": "^4.17.21",
     "nodemon": "^2.0.14",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
+    "sass": "^1.43.5",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
@@ -18,6 +25,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "build-css": "sass --quiet --style compressed public/scss/index.scss src/index.css",
+    "build-all": "npm run build-css && npm run build",
     "backend": "node ./node_modules/nodemon/bin/nodemon.js backend/server.js"
   },
   "eslintConfig": {

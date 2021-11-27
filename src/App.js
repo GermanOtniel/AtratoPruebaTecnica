@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import Dashboard from './components/pages/dashboard/Dashboard';
+import LoaderContext from './contexts/loaderScreen/LoaderContext';
 
-function App() {
+const App = (props) => {
+  const [statusLoader, setStatusLoader] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <LoaderContext.Provider
+        value={{
+          loaderScreen: statusLoader,
+          setLoaderScreen: (status) => {
+            setStatusLoader(status);
+          }
+        }}
+      >
+      <Routes>
+        <Route
+          exact
+          path="/"
+          element={(<Dashboard/>)}
+        />
+      </Routes>
+      </LoaderContext.Provider>
+    </BrowserRouter>
   );
 }
 

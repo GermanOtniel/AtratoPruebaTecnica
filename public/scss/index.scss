@@ -1,0 +1,46 @@
+body {
+  background-color: transparent;
+  margin: 0px;
+}
+
+@for $i from 0 through 100 {
+  .mTn-#{$i} {
+    margin-top: -#{$i}px !important;
+  }
+
+  .mBn-#{$i} {
+    margin-bottom: -#{$i}px !important;
+  }
+
+  .mT-#{$i} {
+    margin-top: #{$i}px !important;
+  }
+
+  .mB-#{$i} {
+    margin-bottom: #{$i}px !important;
+  }
+
+  .mR-#{$i} {
+    margin-right: #{$i}px !important;
+  }
+
+  .mL-#{$i} {
+    margin-left: #{$i}px !important;
+  }
+
+  .pT-#{$i} {
+    padding-top: #{$i}px !important;
+  }
+
+  .pB-#{$i} {
+    padding-bottom: #{$i}px !important;
+  }
+
+  .pR-#{$i} {
+    padding-right: #{$i}px !important;
+  }
+
+  .pL-#{$i} {
+    padding-left: #{$i}px !important;
+  }
+}
