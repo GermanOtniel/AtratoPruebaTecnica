@@ -245,9 +245,63 @@
   display: none;
 }
 
+.create-user-form-wrapper {
+  display: flex; 
+  justify-content: center; 
+  padding: 50px 30px;
+}
+
+.create-user-form-container {
+  width: 60vw; 
+  display: flex; 
+  justify-content: space-between; 
+  flex-wrap: wrap;
+}
+
+.create-user-text-field {
+  margin-bottom: 15px !important; 
+  width: 30%;
+}
+
 .atrato-flex-spbtwn {
   display: flex;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 1200px) and (min-width: 1001px) {
+  .create-user-form-container {
+    width: 70vw;
+  }
+}
+
+@media screen and (max-width: 1000px) and (min-width: 801px) {
+  .create-user-form-container {
+    width: 85vw;
+  }
+}
+
+@media screen and (max-width: 800px) and (min-width: 100px) {
+  .create-user-form-container {
+    width: 95vw;
+  }
+}
+
+@media screen and (max-width: 700px) and (min-width: 501px) {
+  .create-user-text-field {
+    width: 49%;
+    margin-bottom: 15px !important;
+  }
+}
+
+@media screen and (max-width: 500px) and (min-width: 100px) {
+  .create-user-form-wrapper {
+    padding: 15px 15px;
+  }
+
+  .create-user-text-field {
+    width: 98%;
+    margin-bottom: 15px !important;
+  }
 }
 
 @media screen and (max-width: 700px) and (min-width: 100px) {

@@ -49,7 +49,7 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setCollapseOpen(row.id)}
+            onClick={() => setCollapseOpen(row)}
           >
             { collapseOpen === row.id ? 
               <KeyboardArrowUpIcon /> : 
@@ -89,12 +89,13 @@ const CollapsibleTable = ({
   const [collapseData, setCollapseData] = useState(null);
   const { setLoaderScreen } = useContext(LoaderContext);
 
-  const handleCollapseOpenAndShowData = async (collapse, id) => {
+  const handleCollapseOpenAndShowData = async (rowData) => {
     setLoaderScreen(true);
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + (id + 1));
-    const pokemonResponse = await response.json();
-    setCollapseData(<UserDataCard data={pokemonResponse} />);
-    setCollapseOpen(collapse === collapseOpen ? null : collapse);
+    const response = await fetch(
+      'https://pokeapi.co/api/v2/pokemon/' + (rowData.id + 1));
+    await response.json();
+    setCollapseData(<UserDataCard data={rowData} />);
+    setCollapseOpen(rowData.id === collapseOpen ? null : rowData.id);
     setLoaderScreen(false);
   };
 
@@ -135,7 +136,7 @@ const CollapsibleTable = ({
                 key={i} 
                 row={row} 
                 collapseOpen={collapseOpen} 
-                setCollapseOpen={(collapse) => handleCollapseOpenAndShowData(collapse, i)}
+                setCollapseOpen={(rowData) => handleCollapseOpenAndShowData(rowData)}
                 collapseData={collapseData}
                 columnHeaders={columnHeaders}
               />

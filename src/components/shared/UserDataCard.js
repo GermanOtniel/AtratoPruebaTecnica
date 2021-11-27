@@ -5,13 +5,12 @@ import Avatar from '@mui/material/Avatar';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 
-const UserDataCard = () => {
+const UserDataCard = ({ data }) => {
+  const { fullName, phoneNumber, status, id, email, analist, birthDate } = data;
 
   return (
     <div className='user-data-wrapper'>
-      <div 
-        className='user-data-card'
-      >
+      <div className='user-data-card'>
           <div className='user-data-top-items'>
             <div className='user-data-img-name'>
               <div>
@@ -21,8 +20,8 @@ const UserDataCard = () => {
                 />
               </div>
               <span>
-                <h2 className='mTn-3 mBn-5'>Juan Manuel Ramón Martínez</h2>
-                <small>ID: 45170</small>
+                <h2 className='mTn-3 mBn-5'>{fullName}</h2>
+                <small>ID: {id}</small>
               </span>
             </div>
             <div className='user-data-status-btn'>
@@ -31,7 +30,7 @@ const UserDataCard = () => {
                 endIcon={<ArrowDropDownIcon />}
                 size="small"
               >
-                Estatus
+                {status}
               </Button>
             </div>
             <div className='user-data-edit-btn-resp'>
@@ -43,29 +42,25 @@ const UserDataCard = () => {
           <div className='user-data-data'>
             <div>
               <h4>MAIL</h4>
-              <p className='mTn-20'>juanitobanan@gmail.com</p>
+              <p className='mTn-20'>{email}</p>
               <h4>TELÉFONO</h4>
-              <p className='mTn-20'>5537225854</p>
+              <p className='mTn-20'>{phoneNumber}</p>
               <div>
                 <span>
                   <h4>FECHA DE NACIMIENTO</h4>
-                  <p className='mTn-20'>31/octubre/1994</p>
+                  <p className='mTn-20'>{birthDate}</p>
                 </span>
                 <span>
                   <h4>ANALISTA ASIGNADO</h4>
-                  <p className='mTn-20'>Jesús León</p>
+                  <p className='mTn-20'>{analist}</p>
                 </span>
               </div>
             </div>
-            <div
-              className='user-data-small-card-container'
-            >
-              <div
-                className='user-data-small-card'
-              >
+            <div className='user-data-small-card-container'>
+              <div className='user-data-small-card'>
                 <div>
                   <h4 className='mT-0'>FULL NAME</h4>
-                  <p className='mTn-20'>Juan Manuel Ramón Martínez</p>
+                  <p className='mTn-20'>{fullName}</p>
                   <h4>CARD NUMBER</h4>
                   <p className='mTn-20'>4396513893004685</p>
                   <div className='mTn-10 atrato-flex-spbtwn'>
@@ -100,7 +95,7 @@ const UserDataCard = () => {
               endIcon={<ArrowDropDownIcon />}
               size="small"
             >
-              Estatus
+              {status}
             </Button>
           </div>
       </div>

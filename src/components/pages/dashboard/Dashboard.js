@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalLayout from '../../layout/GeneralLayout';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
@@ -14,6 +14,10 @@ import TextField from '@mui/material/TextField';
 import './dash.css';
 import CollapsibleTable from '../../shared/TableComponent';
 import _ from 'lodash';
+import FullScreenDialog from '../../shared/FullScreenDialog';
+import { userFormDialogBody } from '../../../util/drawerElements';
+import { userFormReducer } from '../../../reducers/userFormReducer';
+import { FieldsValidator } from '../../../util/classes/FieldsValidator';
 
 const columnHeaders = [
   {
@@ -48,32 +52,121 @@ const columnHeaders = [
   },
 ];
 
-const createData = (fullName, phoneNumber, status, id, email) => {
+const createData = (
+  firstName, secondName, firstLastName, secondLastName,
+  phoneNumber, status, id, email, analist, birthDate) => {
   return {
-    fullName,
+    fullName: `${
+      ((firstName ? firstName + ' ' : '') || '') + 
+      ((secondName ? secondName + ' ' : '') || '') +
+      ((firstLastName ? firstLastName + ' ' : '') || '') +
+      ((secondLastName ? secondLastName + ' ' : '') || '')
+    }`,
     phoneNumber,
     status,
     id,
-    email
+    email,
+    analist,
+    birthDate
   };
 };
 
 const rowsData = [
-  createData('Germán Gutiérrez','5512345678','PENDIENTE', 1, 'german@gmail.com'),
-  createData('Saúl López', '3312345678', 'EN PROCESO', 2, 'saul@gmail.com'),
-  createData('Edgar Lara', '2212345677', 'PENDIENTE', 3, 'edgar@gmail.com'),
-  createData('Sarabi Vega', '2212345678', 'PENDIENTE', 4, 'sarabi@gmail.com'),
-  createData('Lilia Montes', '2212345679', 'EN PROCESO', 5, 'lilia@gmail.com'),
+  createData(
+    'Germán', '', 'Gutiérrez', '', '5512345678','pendiente', 
+    1, 'german@gmail.com', 1, '1994-10-31'),
+  createData(
+    'Saúl', '', 'López', '', '3312345678', 'proceso', 2, 'saul@gmail.com', 
+    2, '1996-10-31'),
+  createData(
+    'Edgar', '', 'Lara', '', '2212345677', 'proceso', 3, 
+    'edgar@gmail.com', 3, '1998-10-31'),
+  createData(
+    'Sarabi', '', 'Vega', '', '2212345678', 'completado', 4, 
+    'sarabi@gmail.com', 1, '1999-10-31'),
+  createData(
+    'Lilia', '', 'Montes', '', '2212345679', 'pendiente', 5, 
+    'lilia@gmail.com', 2, '2000-10-31'),
+];
+
+let userDataDefault = {
+  email: '',
+  phoneNumber: '',
+  firstName: '',
+  secondName: '',
+  firstLastName: '',
+  secondLastName: '',
+  birthDate: '',
+  status: '',
+  analist: ''
+};
+
+const userRules = [
+  {
+    name: 'email',
+    regExp: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+    isRequired: true
+  },
+  {
+    name: 'phoneNumber',
+    regExp: /^\d+$/,
+    isRequired: true
+  },
+  {
+    name: 'firstName',
+    regExp: /([^\s])/,
+    isRequired: true
+  },
+  {
+    name: 'secondName',
+    regExp: /([^\s])/,
+    isRequired: false
+  },
+  {
+    name: 'firstLastName',
+    regExp: /([^\s])/,
+    isRequired: true
+  },
+  {
+    name: 'secondLastName',
+    regExp: /([^\s])/,
+    isRequired: false
+  },
+  {
+    name: 'birthDate',
+    regExp: '',
+    isRequired: true
+  },
+  {
+    name: 'status',
+    regExp: '',
+    isRequired: true
+  },
+  {
+    name: 'analist',
+    regExp: '',
+    isRequired: true
+  }
 ];
 
 const Dashboard = () => {  
-  const [age, setAge] = useState('');
   const [sortDirection, setSortDirection] = useState('asc');
   const [headerSorted, setHeaderSorted] = useState(null);
   const [rows, setRows] = useState(rowsData);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [userForm, dispatchUserForm] = useReducer(
+    userFormReducer, userDataDefault
+  );
+  const [userFormErrors, setUserFormErrors] = useState({});
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const handleChangeUserForm = (event) => {
+    const { name, value } = event.target;
+    const payload = { fieldName: name, value };
+    delete userFormErrors[name];
+    dispatchUserForm({
+      type: 'ON_CHANGE_HANDLER',
+      payload
+    });
   };
 
   const handleSort = (headerToSort) => {
@@ -90,6 +183,25 @@ const Dashboard = () => {
       setSortDirection(currentSortDirection);
       setHeaderSorted(headerToSort.dataKey);
     }
+  };
+
+  const handleSaveUser = () => {
+    const newValidation = new FieldsValidator(userRules, userForm);
+    const rValidation = newValidation.executeValidation();
+    if (rValidation.errors) setUserFormErrors(rValidation.fields)
+    else {
+      setUserFormErrors({});
+      console.log(userForm);
+    }
+  };
+
+  const handleOpenDialog = () => {
+    dispatchUserForm({
+      type: 'RESET',
+      payload: { value: userDataDefault }
+    });
+    setUserFormErrors({});
+    setOpenDialog(true);
   };
 
   return (
@@ -109,6 +221,7 @@ const Dashboard = () => {
               variant="contained" 
               endIcon={<PersonAddAltIcon />}
               fullWidth={true}
+              onClick={() => handleOpenDialog()}
             >
               Crear
             </Button>
@@ -148,11 +261,10 @@ const Dashboard = () => {
               <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={age}
-                onChange={handleChange}
                 autoWidth
                 label="Estatus"
                 style={{ height:'40px' }}
+                defaultValue = ""
               >
                 <MenuItem value="">
                   <em>Ninguno</em>
@@ -186,6 +298,16 @@ const Dashboard = () => {
           handleSort={handleSort}
         />
       </div>
+      <FullScreenDialog 
+        open={openDialog} 
+        handleClose={() => setOpenDialog(false)}
+        title={'Crear usuario:'}
+        handleAction={() => handleSaveUser()}
+        labelAction={'Guardar'}
+        dialogBody={userFormDialogBody(
+          handleChangeUserForm, userForm, userFormErrors
+        )}
+      />
     </GlobalLayout>
   );
 };
