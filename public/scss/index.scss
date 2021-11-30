@@ -49,6 +49,14 @@ body {
   }
 }
 
+.general-layout {
+  background-color: #f5f6f8; 
+  width: 100vw; 
+  height: 100vh; 
+  overflow-x: hidden;
+
+}
+
 .content-container {
   width: 100vw !important;
   padding-left: calc(60px + 1px) !important;
@@ -206,6 +214,10 @@ body {
   margin-top: 30px;
 }
 
+.dash-table-container {
+  border: 1px solid #adabab !important;
+}
+
 .user-data-wrapper {
   display: flex; 
   justify-content: center; 
@@ -298,7 +310,7 @@ body {
 
 .user-data-edit-btn {
   display: flex; 
-  justify-content: end; 
+  justify-content: flex-end; 
   margin-top: 10px;
 }
 

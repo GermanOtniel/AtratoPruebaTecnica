@@ -1,5 +1,4 @@
 import React, { useReducer, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import GlobalLayout from '../../layout/GeneralLayout';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import Button from '@mui/material/Button';
@@ -11,54 +10,23 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import './dash.css';
 import CollapsibleTable from '../../shared/TableComponent';
 import _ from 'lodash';
 import FullScreenDialog from '../../shared/FullScreenDialog';
 import { userFormDialogBody } from '../../../util/drawerElements';
 import { userFormReducer } from '../../../reducers/userFormReducer';
 import { FieldsValidator } from '../../../util/classes/FieldsValidator';
-import { axiosInstance } from '../../../adapters/axios';
 import LoaderContext from '../../../contexts/loaderScreen/LoaderContext';
-import { handleFailedResponse } from '../../../util/handleErrors';
 import AlertMsgContext from '../../../contexts/alertMessage/AlertMsgContext';
-import { getLabelOfDate } from '../../../util/formattDates';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UserDataCard from '../../shared/UserDataCard';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
-
-const columnHeaders = [
-  {
-    align:'left',
-    label: 'Nombre completo',
-    dataKey: 'full_name',
-    canSort: true
-  },
-  {
-    align:'center',
-    label: 'Estatus',
-    dataKey: 'status',
-    canSort: true
-  },
-  {
-    align:'center',
-    label: 'Teléfono',
-    dataKey: 'phone_number',
-    canSort: true
-  },
-  {
-    align:'center',
-    label: 'Correo electrónico',
-    dataKey: 'email',
-    canSort: true
-  },
-  {
-    align:'center',
-    label: 'ID',
-    dataKey: '_id',
-    canSort: true
-  }
-];
+import { columnHeaders } from '../../../util/columnsTable';
+import { userRules } from '../../../util/rulesForms';
+import { 
+  createNewUser, getAnalysts, getOldestUser, 
+  getUsers, getUsersByFilters 
+} from '../../../adapters/dashboardAdapter';
 
 let userDataDefault = {
   email: '',
@@ -72,53 +40,21 @@ let userDataDefault = {
   analist_id: ''
 };
 
-const userRules = [
-  {
-    name: 'email',
-    regExp: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-    isRequired: true
-  },
-  {
-    name: 'phone_number',
-    regExp: /^\d+$/,
-    isRequired: true
-  },
-  {
-    name: 'first_name',
-    regExp: /([^\s])/,
-    isRequired: true
-  },
-  {
-    name: 'second_name',
-    regExp: /([^\s])/,
-    isRequired: false
-  },
-  {
-    name: 'first_last_name',
-    regExp: /([^\s])/,
-    isRequired: true
-  },
-  {
-    name: 'second_last_name',
-    regExp: /([^\s])/,
-    isRequired: false
-  },
-  {
-    name: 'birth_date',
-    regExp: '',
-    isRequired: true
-  },
-  {
-    name: 'status',
-    regExp: '',
-    isRequired: true
-  },
-  {
-    name: 'analist_id',
-    regExp: '',
-    isRequired: true
-  }
-];
+let paginationDefault = {
+  page: 0,
+  resPerPage: 10
+};
+
+let querySearchDefault = {
+  textSearch: '',
+  statusSearch: ''
+};
+
+let oldestUserDef = {
+  _id: null,
+  full_name: '',
+  created: ''
+};
 
 const Dashboard = () => {  
   const [sortDirection, setSortDirection] = useState('asc');
@@ -134,64 +70,22 @@ const Dashboard = () => {
   const { setLoaderScreen } = useContext(LoaderContext);
   const { setShowAlert } = useContext(AlertMsgContext);
   const [analystsOptions, setAnalystsOptions] = useState([]);
-  const [pagination, setPagination] = useState({
-    page: 0,
-    resPerPage: 10
-  });
-  const [querySearch, setQuerySearch] = useState({
-    textSearch: '',
-    statusSearch: ''
-  });
+  const [pagination, setPagination] = useState(paginationDefault);
+  const [querySearch, setQuerySearch] = useState(querySearchDefault);
   const [resetComponent, setResetComponent] = useState(false);
-  const [oldestUser, setOldestUser] = useState({
-    _id: null,
-    full_name: '',
-    created: ''
-  });
+  const [oldestUser, setOldestUser] = useState(oldestUserDef);
 
   useEffect(() => {
     (async function() {
       setLoaderScreen(true);
-      const { page, resPerPage } = pagination;
-      const { textSearch, statusSearch } = querySearch;
-      const usersResponse = await axiosInstance(
-        'get',
-        `/users/?page=${(page + 1)}&resPerPage=${
-          (resPerPage)}&search=${textSearch}&status=${statusSearch}`,
-        {},
-        setShowAlert,
-        false
+      await getUsers(
+        pagination, querySearch, setShowAlert, 
+        setTotal, setTotalUsers, setRows
       );
-      if (usersResponse?.code === 200) {
-        setTotal(usersResponse.data?.total || 0);
-        setTotalUsers(usersResponse.data?.allTotal || 0);
-        setRows((usersResponse.data?.rows ? 
-          usersResponse.data?.rows.map(user => ({ 
-            ...user, 
-            full_name: `${
-              ((user.first_name ? user.first_name + ' ' : '') || '') + 
-              ((user.second_name ? user.second_name + ' ' : '') || '') +
-              ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-              ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
-            }`,
-            analist: user.analist_id.full_name
-          })) : [])
-        );
-      }
-      const oldestUserResponse = await axiosInstance(
-        'get', `/users/oldest`, {}, setShowAlert, false
-      );
-      if (oldestUserResponse?.code === 200) {
-        setOldestUser({
-          _id: oldestUserResponse.data?.user?._id,
-          full_name: `${oldestUserResponse.data?.user?.first_name} ${
-            oldestUserResponse.data?.user?.first_last_name
-          }`,
-          created: getLabelOfDate(oldestUserResponse.data?.user?.created_at)
-        });
-      }
+      await getOldestUser(setShowAlert, setOldestUser);
       setLoaderScreen(false);
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetComponent]);
 
   const handleChangeUserForm = (event) => {
@@ -234,17 +128,10 @@ const Dashboard = () => {
     else {
       setLoaderScreen(true);
       setUserFormErrors({});
-      const userResponse = await axiosInstance(
-        'post',
-        '/users/',
-        { ...userForm },
-        setShowAlert,
-        true
+      await createNewUser(
+        userForm, setShowAlert, setResetComponent, 
+        setOpenDialog, resetComponent, setUserFormErrors
       );
-      if (userResponse?.code === 200) {
-        setResetComponent(!resetComponent);
-        setOpenDialog(false);
-      } else handleFailedResponse(userResponse, setUserFormErrors);
       setLoaderScreen(false);
     }
   };
@@ -261,16 +148,7 @@ const Dashboard = () => {
   const handleGetAnalysts = async () => {
     if (analystsOptions.length === 0) {
       setLoaderScreen(true);
-      const analystResponse = await axiosInstance(
-        'get',
-        '/analysts/',
-        {},
-        setShowAlert,
-        false
-      );
-      if (analystResponse?.code === 200) {
-        setAnalystsOptions(analystResponse.data?.analysts || []);
-      }
+      await getAnalysts(setShowAlert, setAnalystsOptions);
       setLoaderScreen(false);
     }
   };
@@ -280,68 +158,36 @@ const Dashboard = () => {
     if (textSearch || statusSearch) {
       setLoaderScreen(true);
       setPagination({ page: 0, resPerPage: 10 });
-      const filterResults = await axiosInstance(
-        'get', 
-        `/users/?page=1&resPerPage=10&search=${
-          textSearch.trim()}&status=${statusSearch}`,
-        {},
-        setShowAlert,
-        false
+      await getUsersByFilters(
+        querySearch, setShowAlert, setTotal, 
+        setTotalUsers, setRows
       );
-      if (filterResults?.code === 200) {
-        setTotal(filterResults.data?.total || 0);
-        setTotalUsers(filterResults.data?.allTotal || 0);
-        setRows((filterResults.data?.rows ? 
-          filterResults.data?.rows.map(user => ({ 
-            ...user, 
-            full_name: `${
-              ((user.first_name ? user.first_name + ' ' : '') || '') + 
-              ((user.second_name ? user.second_name + ' ' : '') || '') +
-              ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-              ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
-            }`,
-            analist: user.analist_id.full_name
-          })) : [])
-        );
-      }
       setLoaderScreen(false);
     }
   };
 
   const handleCleanFilters = async () => {
     setLoaderScreen(true);
-    setQuerySearch({
+    let newQuerySearch = {
       textSearch: '',
       statusSearch: ''
-    });
+    };
+    setQuerySearch(newQuerySearch);
     setPagination({
       page: 0,
       resPerPage: 10
     });
-    const cleanFilterResults = await axiosInstance(
-      'get', 
-      `/users/?page=1&resPerPage=10&search=&status=`,
-      {},
-      setShowAlert,
-      false
+    await getUsersByFilters(
+      newQuerySearch, setShowAlert, setTotal, 
+      setTotalUsers, setRows
     );
-    if (cleanFilterResults?.code === 200) {
-      setTotal(cleanFilterResults.data?.total || 0);
-      setTotalUsers(cleanFilterResults.data?.allTotal || 0);
-      setRows((cleanFilterResults.data?.rows ? 
-        cleanFilterResults.data?.rows.map(user => ({ 
-          ...user, 
-          full_name: `${
-            ((user.first_name ? user.first_name + ' ' : '') || '') + 
-            ((user.second_name ? user.second_name + ' ' : '') || '') +
-            ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-            ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
-          }`,
-          analist: user.analist_id.full_name
-        })) : [])
-      );
-    }
     setLoaderScreen(false);
+  };
+
+  const handlePagination = (newPage, newResPerPage) => {
+    if (!newResPerPage) newResPerPage = pagination.resPerPage;
+    setPagination({ page: newPage, resPerPage: newResPerPage });
+    setResetComponent(!resetComponent);
   };
 
   return (
@@ -371,11 +217,20 @@ const Dashboard = () => {
               <QueryBuilderIcon className='dash-card-icon' />
             </div>
             <div className='dash-small-card-text'>
-              <p>Usuario rezagado:</p>
-              <h3 className='mTn-24 mBn-8'>
-                {oldestUser.full_name}
-              </h3>
-              <small>{oldestUser.created}</small>
+              { oldestUser?._id && totalUsers > 0 ?
+                <React.Fragment>
+                  <p>Usuario rezagado:</p>
+                  <h3 className='mTn-24 mBn-8'>
+                    {oldestUser.full_name}
+                  </h3>
+                  <small>{oldestUser.created}</small>
+                </React.Fragment> :
+                <React.Fragment>
+                  <h3 className='mBn-8'>
+                    ¡Estás al día!
+                  </h3>
+                  <small>Sin usuarios rezagados</small>
+                </React.Fragment> }
             </div>
             <Button 
               className='dash-card-btn color-orange'
@@ -389,6 +244,7 @@ const Dashboard = () => {
                   5000, 'warning'
                 );
               }}
+              disabled={oldestUser?._id === null}
             >
               Atender
             </Button>
@@ -402,7 +258,8 @@ const Dashboard = () => {
             <FormControl className='dash-status-container'>
               <InputLabel 
                 className='mTn-5'
-                id="demo-simple-select-autowidth-label">
+                id="demo-simple-select-autowidth-label"
+              >
                 Estatus
               </InputLabel>
               <Select
@@ -470,11 +327,9 @@ const Dashboard = () => {
               />
             );
           }}
-          handlePagination={(newPage, newResPerPage) => {
-            if (!newResPerPage) newResPerPage = pagination.resPerPage;
-            setPagination({ page: newPage, resPerPage: newResPerPage });
-            setResetComponent(!resetComponent);
-          }}
+          handlePagination={(newPage, newResPerPage) => handlePagination(
+            newPage, newResPerPage
+          )}
           pagination={pagination}
           total={total}
         />

@@ -13,7 +13,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TablePagination from '@mui/material/TablePagination';
 import TableSortLabel, { tableSortLabelClasses } from '@mui/material/TableSortLabel';
-import UserDataCard from './UserDataCard';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => {
   return {
@@ -116,11 +115,14 @@ const CollapsibleTable = ({
         onPageChange={(e, newPage) => handleChangePage(e, newPage)}
         onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
       />
-      <TableContainer component={Paper} style={{ border:'1px solid #adabab' }}>
+      <TableContainer 
+        className='dash-table-container'
+        component={Paper} 
+      >
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              <StyledTableCell />
+              <StyledTableCell/>
               { columnHeaders.map((header, i) => (
                 <StyledTableCell
                   key={i}
@@ -137,7 +139,7 @@ const CollapsibleTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => (
+            { rows.map((row, i) => (
               <Row 
                 key={i} 
                 row={row} 

@@ -1,12 +1,11 @@
 import React from 'react';
-import '../pages/dashboard/dash.css';
 import SnackBar from '../shared/AlertMessage';
 import LoaderComponent from '../shared/Loader';
 import NavigationDrawer from '../shared/NavigationDrawer';
 
 const GlobalLayout = ({ children }) => {
   return (
-    <div style={{ backgroundColor: '#f5f6f8', width:'100vw', height:'100vh', overflowX: 'hidden' }}>
+    <div className='general-layout'>
       <LoaderComponent/>
       <SnackBar/>
       <NavigationDrawer>
