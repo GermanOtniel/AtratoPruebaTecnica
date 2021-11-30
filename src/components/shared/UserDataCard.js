@@ -10,13 +10,14 @@ import { userFormDialogBody } from '../../util/drawerElements';
 import { userFormReducer } from '../../reducers/userFormReducer';
 import _ from 'lodash';
 import LoaderContext from '../../contexts/loaderScreen/LoaderContext';
-import { axiosInstance } from '../../adapters/axios';
 import AlertMsgContext from '../../contexts/alertMessage/AlertMsgContext';
 import { FieldsValidator } from '../../util/classes/FieldsValidator';
-import { handleFailedResponse } from '../../util/handleErrors';
 import ModalConfirm from './ModalConfirm';
 import { modalDeleteBody } from '../../util/utilModals';
 import { userRules } from '../../util/rulesForms';
+import { 
+  updateUser, getAnalysts, deleteUser 
+} from '../../adapters/dashboardAdapter';
 
 
 const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
@@ -56,17 +57,10 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
     else {
       setLoaderScreen(true);
       setUserFormErrors({});
-      const userUpdate = await axiosInstance(
-        'put',
-        `/users/${_id}`,
-        { ...userForm },
-        setShowAlert,
-        true
+      await updateUser(
+        userForm, setShowAlert, _id, resetComponent,
+        setResetComponent, setOpenDialog, setUserFormErrors
       );
-      if (userUpdate?.code === 200) {
-        setResetComponent(!resetComponent);
-        setOpenDialog(false);
-      } else handleFailedResponse(userUpdate, setUserFormErrors);
       setLoaderScreen(false);
     }
   };
@@ -90,34 +84,17 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
   const handleGetAnalysts = async () => {
     if (analystsOptions.length === 0) {
       setLoaderScreen(true);
-      const analystResponse = await axiosInstance(
-        'get',
-        '/analysts/',
-        {},
-        setShowAlert,
-        false
-      );
-      if (analystResponse?.code === 200) {
-        setAnalystsOptions(analystResponse.data?.analysts || []);
-      }
+      await getAnalysts(setShowAlert, setAnalystsOptions);
       setLoaderScreen(false);
     }
   };
 
   const handleDeleteUser = async () => {
     setLoaderScreen(true);
-    const deleteUser = await axiosInstance(
-      'delete',
-      `/users/${_id}`,
-      {},
-      setShowAlert,
-      true
+    await deleteUser(
+      _id, setShowAlert, setResetComponent, resetComponent,
+      setDeleteModal, setOpenDialog, setUserFormErrors
     );
-    if (deleteUser?.code === 200) {
-      setResetComponent(!resetComponent);
-      setDeleteModal(false);
-      setOpenDialog(false);
-    } else handleFailedResponse(deleteUser, setUserFormErrors);
     setLoaderScreen(false);
   };
 

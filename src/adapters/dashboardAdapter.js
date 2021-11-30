@@ -112,3 +112,38 @@ export const getUsersByFilters = async (
     );
   }
 };
+
+export const updateUser = async (
+  userForm, setShowAlert, _id, resetComponent,
+  setResetComponent, setOpenDialog, setUserFormErrors
+) => {
+  const userUpdate = await axiosInstance(
+    'put',
+    `/users/${_id}`,
+    { ...userForm },
+    setShowAlert,
+    true
+  );
+  if (userUpdate?.code === 200) {
+    setResetComponent(!resetComponent);
+    setOpenDialog(false);
+  } else handleFailedResponse(userUpdate, setUserFormErrors);
+};
+
+export const deleteUser = async (
+  _id, setShowAlert, setResetComponent, resetComponent,
+  setDeleteModal, setOpenDialog, setUserFormErrors
+) => {
+  const deleteUser = await axiosInstance(
+    'delete',
+    `/users/${_id}`,
+    {},
+    setShowAlert,
+    true
+  );
+  if (deleteUser?.code === 200) {
+    setResetComponent(!resetComponent);
+    setDeleteModal(false);
+    setOpenDialog(false);
+  } else handleFailedResponse(deleteUser, setUserFormErrors);
+};
