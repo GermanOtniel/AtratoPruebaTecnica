@@ -25,6 +25,7 @@ import AlertMsgContext from '../../../contexts/alertMessage/AlertMsgContext';
 import { getLabelOfDate } from '../../../util/formattDates';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UserDataCard from '../../shared/UserDataCard';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 
 const columnHeaders = [
   {
@@ -281,7 +282,8 @@ const Dashboard = () => {
       setPagination({ page: 0, resPerPage: 10 });
       const filterResults = await axiosInstance(
         'get', 
-        `/users/?page=1&resPerPage=10&search=${textSearch}&status=${statusSearch}`,
+        `/users/?page=1&resPerPage=10&search=${
+          textSearch.trim()}&status=${statusSearch}`,
         {},
         setShowAlert,
         false
@@ -383,7 +385,7 @@ const Dashboard = () => {
               onClick={() => {
                 setShowAlert(
                   true, 'right', 
-                  'Funcionalidad aún en desarrollo...',
+                  'Funcionalidad para la segunda entrega :D',
                   5000, 'warning'
                 );
               }}
@@ -424,7 +426,7 @@ const Dashboard = () => {
               </Select>
             </FormControl>
             <TextField 
-              label="Id o nombre" 
+              label="Id, nombre, correo ó teléfono" 
               variant="outlined" 
               className='dash-text-search'
               onChange={(e) => setQuerySearch({
@@ -477,6 +479,15 @@ const Dashboard = () => {
           total={total}
         />
       </div>
+      {
+        rows.length === 0 && totalUsers !== 0 &&
+        <div style={{ textAlign:'center' }}>
+          <SentimentVeryDissatisfiedIcon className='mT-20'/>
+          <h5 className='mTn-10'>
+            Tu búsqueda no ha arrojado resultados 
+          </h5>
+        </div>
+      }
       <FullScreenDialog 
         open={openDialog} 
         handleClose={() => setOpenDialog(false)}

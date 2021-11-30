@@ -14,6 +14,8 @@ import { axiosInstance } from '../../adapters/axios';
 import AlertMsgContext from '../../contexts/alertMessage/AlertMsgContext';
 import { FieldsValidator } from '../../util/classes/FieldsValidator';
 import { handleFailedResponse } from '../../util/handleErrors';
+import ModalConfirm from './ModalConfirm';
+import { modalDeleteBody } from '../../util/utilModals';
 
 const userRules = [
   {
@@ -69,7 +71,7 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
     data, 
     [
       'analist', 'full_name', 'pin', 'exp', 'updated_at',
-      'cvv', 'card_number', '_id', '__v', 'created_at'
+      'cvv', 'card_number', '_id', '__v', 'created_at', 'f_name'
     ]);
   const [userForm, dispatchUserForm] = useReducer(
     userFormReducer, 
@@ -84,6 +86,7 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
   const [analystsOptions, setAnalystsOptions] = useState([]);
   const { setLoaderScreen } = useContext(LoaderContext);
   const { setShowAlert } = useContext(AlertMsgContext);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const handleUpdateUser = async () => {
     const newValidation = new FieldsValidator(userRules, userForm);
@@ -145,6 +148,23 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
       }
       setLoaderScreen(false);
     }
+  };
+
+  const handleDeleteUser = async () => {
+    setLoaderScreen(true);
+    const deleteUser = await axiosInstance(
+      'delete',
+      `/users/${_id}`,
+      {},
+      setShowAlert,
+      true
+    );
+    if (deleteUser?.code === 200) {
+      setResetComponent(!resetComponent);
+      setDeleteModal(false);
+      setOpenDialog(false);
+    } else handleFailedResponse(deleteUser, setUserFormErrors);
+    setLoaderScreen(false);
   };
 
   return (
@@ -246,13 +266,20 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
       <FullScreenDialog 
         open={openDialog} 
         handleClose={() => setOpenDialog(false)}
-        title={'Crear usuario:'}
+        title={'Editar usuario:'}
         handleAction={() => handleUpdateUser()}
-        labelAction={'Guardar'}
+        labelAction={'Actualizar'}
         dialogBody={userFormDialogBody(
           handleChangeUserForm, userForm, userFormErrors,
-          handleGetAnalysts, analystsOptions
+          handleGetAnalysts, analystsOptions, true, setDeleteModal
         )}
+      />
+      <ModalConfirm
+        open={deleteModal} 
+        handleClose={() => setDeleteModal(false)} 
+        title={'Eliminar usuario:'}
+        handleAction={() => handleDeleteUser()}
+        body={modalDeleteBody()}
       />
     </div>
   );

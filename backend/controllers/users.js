@@ -21,7 +21,16 @@ const isValidObjectId = (id) => {
       return false;
   }
   return false;
-}
+};
+
+const getFullNameOfUser = (user) => {
+  return `${
+    ((user.first_name ? user.first_name + ' ' : '') || '') + 
+    ((user.second_name ? user.second_name + ' ' : '') || '') +
+    ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
+    ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+  }`
+};
 
 module.exports = {
   /** 
@@ -51,6 +60,7 @@ module.exports = {
         second_name: req.body.second_name,
         first_last_name: req.body.first_last_name,
         second_last_name: req.body.second_last_name,
+        f_name: getFullNameOfUser(req.body),
         phone_number: req.body.phone_number,
         status: req.body.status,
         card_number: creditCard.data.cardNumber,
@@ -69,9 +79,9 @@ module.exports = {
     }
   },
   /** 
-   * Create a new user
+   * Update a new user
    * 
-   * POST /api/users/:id
+   * PUT /api/users/:id
    * params: id || String
    * body: {
    *   email: String,
@@ -98,6 +108,7 @@ module.exports = {
         second_name: req.body.second_name,
         first_last_name: req.body.first_last_name,
         second_last_name: req.body.second_last_name,
+        f_name: getFullNameOfUser(req.body),
         phone_number: req.body.phone_number,
         status: req.body.status,
       }
@@ -155,7 +166,9 @@ module.exports = {
         { second_name: new RegExp(req.query.search, 'i') },
         { first_last_name: new RegExp(req.query.search, 'i') },
         { second_last_name: new RegExp(req.query.search, 'i') },
-        { email: new RegExp(req.query.search, 'i') }
+        { email: new RegExp(req.query.search, 'i') },
+        { phone_number: new RegExp(req.query.search, 'i') },
+        { f_name: new RegExp(req.query.search, 'i') }
       ]
       if (isValidObjectId(req.query.search)) where['$or'].push({
         _id: new ObjectId(req.query.search)
