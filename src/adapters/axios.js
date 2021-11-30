@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { renderErrorAlertMsg, renderSuccessAlertMsg } from '../util/handleErrors';
 
 export const axiosInstance = async (
   method, url, data, setAlert, showSuccessAlert = false
@@ -14,13 +15,7 @@ export const axiosInstance = async (
         response?.data?.data?.code !== 200 && 
         typeof response?.data?.data?.message === 'string'
       ) {
-        setAlert(
-          true,
-          'right',
-          response?.data?.data?.message,
-          5000,
-          'error'
-        );
+        renderErrorAlertMsg(setAlert, response.data.data.message);
       } 
       if (
         response?.data?.data?.code === 200 &&
@@ -28,13 +23,7 @@ export const axiosInstance = async (
         typeof response?.data?.data?.message === 'string' && 
         showSuccessAlert
       ) {
-        setAlert(
-          true,
-          'right',
-          response?.data?.data?.message,
-          5000,
-          'success'
-        );
+        renderSuccessAlertMsg(setAlert, response.data.data.message);
       }
       return {
         code : response.data.data?.code || 500,
@@ -42,13 +31,6 @@ export const axiosInstance = async (
       }
     }
   } catch (error) {
-    console.log(error.message);
-    setAlert(
-      true,
-      'right',
-      'Error Internal Server 500 ' + (error?.message || ''),
-      5000,
-      'error'
-    );
+    renderErrorAlertMsg(setAlert, (error?.message || ''));
   }
 };

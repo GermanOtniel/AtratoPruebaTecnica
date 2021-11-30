@@ -1,6 +1,7 @@
 const userModel = require('../models/User');
 const modelResponse = require('../services/util/responses');
 const creditCardService = require('../services/util/external_service');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const getExpirationDateOfCreditCard = (stringDate) => {
   const date = new Date(stringDate);
@@ -12,6 +13,15 @@ const getExpirationDateOfCreditCard = (stringDate) => {
     ('0' + (month + 1))) + '/' + String(year).slice(2, 4)
   );
 };
+
+const isValidObjectId = (id) => {
+  if(ObjectId.isValid(id)){
+      if((String)(new ObjectId(id)) === id)
+          return true;        
+      return false;
+  }
+  return false;
+}
 
 module.exports = {
   /** 
@@ -145,8 +155,11 @@ module.exports = {
         { second_name: new RegExp(req.query.search, 'i') },
         { first_last_name: new RegExp(req.query.search, 'i') },
         { second_last_name: new RegExp(req.query.search, 'i') },
-        { email: new RegExp(req.query.search, 'i') },
+        { email: new RegExp(req.query.search, 'i') }
       ]
+      if (isValidObjectId(req.query.search)) where['$or'].push({
+        _id: new ObjectId(req.query.search)
+      })
     }
     if (req.query.status) {
       where['status'] = req.query.status;
