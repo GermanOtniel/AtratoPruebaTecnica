@@ -9,7 +9,7 @@ const LoaderComponent = () => {
 
   return (
     <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{ color: '#fff', zIndex: (theme) => 1000000000 }}
       open={loaderScreen}
     >
       <CircularProgress color='inherit' />

@@ -1,4 +1,4 @@
-.navbar {
+/* .navbar {
   background-color: #f5f6f8 !important;
 }
 
@@ -11,9 +11,9 @@
   font-size: 1.4rem;
   margin-top: 0px;
   margin-bottom: 0px;
-}
+} */
 
-.drawer-wrapper {
+/* .drawer-wrapper {
   position: absolute !important;
   width: 240px;
   background-color: #f5f6f8 !important;
@@ -31,9 +31,9 @@
 
 .drawer-item-selected {
   background-color: #d0d0d0 !important;
-}
+} */
 
-.content-container {
+/* .content-container {
   width: 100vw !important;
   padding-left: calc(60px + 1px) !important;
   padding-right: calc(35px + 1px) !important;
@@ -136,6 +136,24 @@
 
 .dash-card-btn.color-blue-light:hover {
   background-color: #3363FF;
+}
+
+.dash-btn-filter {
+  width: 80% !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.dash-btn-clean-filter {
+  width: 20% !important;
+  position: absolute !important;
+  right: 0px !important;
+  bottom: 0px;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  font-weight: 600 !important;
+  background-color: #E3E5E9 !important;
+  color: gray !important;
 }
 
 .dash-big-card {
@@ -266,9 +284,9 @@
 .atrato-flex-spbtwn {
   display: flex;
   justify-content: space-between;
-}
+} */
 
-@media screen and (max-width: 1200px) and (min-width: 1001px) {
+/* @media screen and (max-width: 1200px) and (min-width: 1001px) {
   .create-user-form-container {
     width: 70vw;
   }
@@ -384,9 +402,9 @@
   .user-data-wrapper {
     margin-left: 0px;
   }
-}
+} */
 
-@media screen and (max-width: 900px) and (min-width: 100px) {
+/* @media screen and (max-width: 900px) and (min-width: 100px) {
   .navbar.open {
     width: calc(100% - 200px) !important;
   }
@@ -467,4 +485,4 @@
   .dash-big-card {
     margin-top: 0px;
   }
-}
+} */

@@ -6,10 +6,12 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export const userFormDialogBody = (handleChange, userForm, errors) => {
+export const userFormDialogBody = (
+  handleChange, userForm, errors, 
+  handleGetAnalysts, analystsOptions) => {
   const {
-    email, phoneNumber, firstName, secondName, status,
-    firstLastName, secondLastName, birthDate, analist
+    email, phone_number, first_name, second_name, status,
+    first_last_name, second_last_name, birth_date, analist_id
   } = userForm;
   const errorsArr = Object.keys(errors);
 
@@ -39,12 +41,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           variant="outlined"
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={phoneNumber}
-          name='phoneNumber'
-          error={errorsArr.includes('phoneNumber')}
+          value={phone_number}
+          name='phone_number'
+          error={errorsArr.includes('phone_number')}
           helperText={
-            errorsArr.includes('phoneNumber') ? 
-            errors['phoneNumber'] :
+            errorsArr.includes('phone_number') ? 
+            errors['phone_number'] :
             "Ejemplo: 3378765522"
           }
         />
@@ -55,12 +57,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           variant="outlined"
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={firstName}
-          name='firstName'
-          error={errorsArr.includes('firstName')}
+          value={first_name}
+          name='first_name'
+          error={errorsArr.includes('first_name')}
           helperText={
-            errorsArr.includes('firstName') ? 
-            errors['firstName'] :
+            errorsArr.includes('first_name') ? 
+            errors['first_name'] :
             "Solo el primer nombre, sin apellidos"
           }
         />
@@ -70,12 +72,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           variant="outlined"
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={secondName}
-          name='secondName'
-          error={errorsArr.includes('secondName')}
+          value={second_name}
+          name='second_name'
+          error={errorsArr.includes('second_name')}
           helperText={
-            errorsArr.includes('secondName') ? 
-            errors['secondName'] :
+            errorsArr.includes('second_name') ? 
+            errors['second_name'] :
             "Solo si cuenta con segundo nombre"
           }
         />
@@ -86,12 +88,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           variant="outlined"
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={firstLastName}
-          name='firstLastName'
-          error={errorsArr.includes('firstLastName')}
+          value={first_last_name}
+          name='first_last_name'
+          error={errorsArr.includes('first_last_name')}
           helperText={
-            errorsArr.includes('firstLastName') ? 
-            errors['firstLastName'] :
+            errorsArr.includes('first_last_name') ? 
+            errors['first_last_name'] :
             "Solo el primer apellido"
           }
         />
@@ -102,12 +104,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           variant="outlined"
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={secondLastName}
-          name='secondLastName'
-          error={errorsArr.includes('secondLastName')}
+          value={second_last_name}
+          name='second_last_name'
+          error={errorsArr.includes('second_last_name')}
           helperText={
-            errorsArr.includes('secondLastName') ? 
-            errors['secondLastName'] :
+            errorsArr.includes('second_last_name') ? 
+            errors['second_last_name'] :
             "Solo el segundo apellido"
           }
         />
@@ -120,12 +122,12 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           }}
           className='create-user-text-field'
           onChange={(e) => handleChange(e)}
-          value={birthDate}
-          name='birthDate'
-          error={errorsArr.includes('birthDate')}
+          value={birth_date}
+          name='birth_date'
+          error={errorsArr.includes('birth_date')}
           helperText={
-            errorsArr.includes('birthDate') ? 
-            errors['birthDate'] :
+            errorsArr.includes('birth_date') ? 
+            errors['birth_date'] :
             "Da clic en el calendario o ingresala manualmente"
           }
         />
@@ -142,13 +144,13 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
             value={status}
             error={errorsArr.includes('status')}
           >
-            <MenuItem value={'pendiente'}>
+            <MenuItem value={'PENDIENTE'}>
               PENDIENTE
             </MenuItem>
-            <MenuItem value={'proceso'}>
+            <MenuItem value={'EN PROCESO'}>
               EN PROCESO
             </MenuItem>
-            <MenuItem value={'completado'}>
+            <MenuItem value={'COMPLETADO'}>
               COMPLETADO
             </MenuItem>
           </Select>
@@ -161,7 +163,10 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
           </FormHelperText>
         </FormControl>
         <FormControl className='create-user-text-field'>
-          <InputLabel id="demo-simple-select-helper-label2">
+          <InputLabel 
+            error={errorsArr.includes('analist_id')}
+            id="demo-simple-select-helper-label2"
+          >
             Analista asignado *
           </InputLabel>
           <Select
@@ -169,24 +174,21 @@ export const userFormDialogBody = (handleChange, userForm, errors) => {
             id="demo-simple-select-helper2"
             label="Analista asignado"
             onChange={(e) => handleChange(e)}
-            name='analist'
-            value={analist}
-            error={errorsArr.includes('analist')}
+            onFocus={() => handleGetAnalysts()}
+            name='analist_id'
+            value={analist_id}
+            error={errorsArr.includes('analist_id')}
           >
-            <MenuItem value={1}>
-              Germán Gutiérrez
-            </MenuItem>
-            <MenuItem value={2}>
-              Manuel Jímenez
-            </MenuItem>
-            <MenuItem value={3}>
-              Sarabi Hernández
-            </MenuItem>
+            { analystsOptions.map((analyst, i) => (
+              <MenuItem value={analyst.value} key={i}>
+                {analyst.label}
+              </MenuItem>
+            ))}
           </Select>
-          <FormHelperText error={errorsArr.includes('analist')}>
+          <FormHelperText error={errorsArr.includes('analist_id')}>
             {
-              errorsArr.includes('analist') ? 
-              errors['analist'] :
+              errorsArr.includes('analist_id') ? 
+              errors['analist_id'] :
               "Asigna un analista a este usuario"
             }
           </FormHelperText>

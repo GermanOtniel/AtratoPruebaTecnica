@@ -1,0 +1,24 @@
+.navbar {
+  background-color: $gray-secondary !important;
+}
+
+.navbar-logo {
+  width: 130px;
+}
+
+.navbar-greeting {
+  color: #757575;
+  font-size: 1.4rem;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+@media screen and (max-width: 900px) and (min-width: 100px) {
+  .navbar.open {
+    width: calc(100% - 200px) !important;
+  }
+
+  .navbar-greeting {
+    display: none;
+  }
+}

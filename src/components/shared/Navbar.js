@@ -153,7 +153,7 @@ const Navbar = ({ open, handleDrawerOpen }) => {
           </IconButton>
           { open ?
             <p className='navbar-greeting'>
-              Buenas noches, <strong>Germán Gutiérrez</strong>
+              ¡Hola! <strong>Sergio García</strong>
             </p> : 
             <img 
               src={process.env.PUBLIC_URL + '/imgs/ColorLogo.png'} 

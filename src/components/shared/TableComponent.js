@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -13,7 +13,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TablePagination from '@mui/material/TablePagination';
 import TableSortLabel, { tableSortLabelClasses } from '@mui/material/TableSortLabel';
-import LoaderContext from '../../contexts/loaderScreen/LoaderContext';
 import UserDataCard from './UserDataCard';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => {
@@ -51,7 +50,7 @@ function Row(props) {
             size="small"
             onClick={() => setCollapseOpen(row)}
           >
-            { collapseOpen === row.id ? 
+            { collapseOpen === row._id ? 
               <KeyboardArrowUpIcon /> : 
               <KeyboardArrowDownIcon /> }
           </IconButton>
@@ -70,7 +69,7 @@ function Row(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse 
-            in={collapseOpen === row.id} 
+            in={collapseOpen === row._id} 
             timeout="auto" 
             unmountOnExit
           >
@@ -83,32 +82,39 @@ function Row(props) {
 }
 
 const CollapsibleTable = ({
-  columnHeaders, rows, sortDirection, handleSort
+  columnHeaders, rows, sortDirection, pagination, total,
+  handleSort, renderCollapseData, handlePagination
 }) => {
   const [collapseOpen, setCollapseOpen] = useState('');
   const [collapseData, setCollapseData] = useState(null);
-  const { setLoaderScreen } = useContext(LoaderContext);
 
-  const handleCollapseOpenAndShowData = async (rowData) => {
-    setLoaderScreen(true);
-    const response = await fetch(
-      'https://pokeapi.co/api/v2/pokemon/' + (rowData.id + 1));
-    await response.json();
-    setCollapseData(<UserDataCard data={rowData} />);
-    setCollapseOpen(rowData.id === collapseOpen ? null : rowData.id);
-    setLoaderScreen(false);
+  useEffect(() => {
+    setCollapseOpen('');
+  }, [rows]);
+
+  const handleCollapseOpenAndShowData = (rowData) => {
+    setCollapseData(renderCollapseData(rowData));
+    setCollapseOpen(rowData._id === collapseOpen ? null : rowData._id);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    handlePagination(newPage, null);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    handlePagination(0, parseInt(event.target.value, 10));
   };
 
   return (
     <React.Fragment>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
         component="div"
-        count={rows.length}
-        rowsPerPage={5}
-        page={0}
-        onPageChange={(uno, dos, tres, cuatro) => console.log(uno, dos, tres, cuatro)}
-        onRowsPerPageChange={(uno, dos, tres, cuatro) => console.log(uno, dos, tres, cuatro)}
+        count={total}
+        rowsPerPage={pagination.resPerPage}
+        page={pagination.page}
+        onPageChange={(e, newPage) => handleChangePage(e, newPage)}
+        onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
       />
       <TableContainer component={Paper} style={{ border:'1px solid #adabab' }}>
         <Table aria-label="collapsible table">

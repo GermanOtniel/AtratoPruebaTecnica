@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalLayout from '../../layout/GeneralLayout';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
@@ -18,18 +18,19 @@ import FullScreenDialog from '../../shared/FullScreenDialog';
 import { userFormDialogBody } from '../../../util/drawerElements';
 import { userFormReducer } from '../../../reducers/userFormReducer';
 import { FieldsValidator } from '../../../util/classes/FieldsValidator';
+import { axiosInstance } from '../../../adapters/axios';
+import LoaderContext from '../../../contexts/loaderScreen/LoaderContext';
+import { handleFailedResponse } from '../../../util/handleErrors';
+import AlertMsgContext from '../../../contexts/alertMessage/AlertMsgContext';
+import { getLabelOfDate } from '../../../util/formattDates';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UserDataCard from '../../shared/UserDataCard';
 
 const columnHeaders = [
   {
     align:'left',
     label: 'Nombre completo',
-    dataKey: 'fullName',
-    canSort: true
-  },
-  {
-    align:'center',
-    label: 'ID',
-    dataKey: 'id',
+    dataKey: 'full_name',
     canSort: true
   },
   {
@@ -41,7 +42,7 @@ const columnHeaders = [
   {
     align:'center',
     label: 'Teléfono',
-    dataKey: 'phoneNumber',
+    dataKey: 'phone_number',
     canSort: true
   },
   {
@@ -50,55 +51,24 @@ const columnHeaders = [
     dataKey: 'email',
     canSort: true
   },
-];
-
-const createData = (
-  firstName, secondName, firstLastName, secondLastName,
-  phoneNumber, status, id, email, analist, birthDate) => {
-  return {
-    fullName: `${
-      ((firstName ? firstName + ' ' : '') || '') + 
-      ((secondName ? secondName + ' ' : '') || '') +
-      ((firstLastName ? firstLastName + ' ' : '') || '') +
-      ((secondLastName ? secondLastName + ' ' : '') || '')
-    }`,
-    phoneNumber,
-    status,
-    id,
-    email,
-    analist,
-    birthDate
-  };
-};
-
-const rowsData = [
-  createData(
-    'Germán', '', 'Gutiérrez', '', '5512345678','pendiente', 
-    1, 'german@gmail.com', 1, '1994-10-31'),
-  createData(
-    'Saúl', '', 'López', '', '3312345678', 'proceso', 2, 'saul@gmail.com', 
-    2, '1996-10-31'),
-  createData(
-    'Edgar', '', 'Lara', '', '2212345677', 'proceso', 3, 
-    'edgar@gmail.com', 3, '1998-10-31'),
-  createData(
-    'Sarabi', '', 'Vega', '', '2212345678', 'completado', 4, 
-    'sarabi@gmail.com', 1, '1999-10-31'),
-  createData(
-    'Lilia', '', 'Montes', '', '2212345679', 'pendiente', 5, 
-    'lilia@gmail.com', 2, '2000-10-31'),
+  {
+    align:'center',
+    label: 'ID',
+    dataKey: '_id',
+    canSort: true
+  }
 ];
 
 let userDataDefault = {
   email: '',
-  phoneNumber: '',
-  firstName: '',
-  secondName: '',
-  firstLastName: '',
-  secondLastName: '',
-  birthDate: '',
+  phone_number: '',
+  first_name: '',
+  second_name: '',
+  first_last_name: '',
+  second_last_name: '',
+  birth_date: '',
   status: '',
-  analist: ''
+  analist_id: ''
 };
 
 const userRules = [
@@ -108,32 +78,32 @@ const userRules = [
     isRequired: true
   },
   {
-    name: 'phoneNumber',
+    name: 'phone_number',
     regExp: /^\d+$/,
     isRequired: true
   },
   {
-    name: 'firstName',
+    name: 'first_name',
     regExp: /([^\s])/,
     isRequired: true
   },
   {
-    name: 'secondName',
+    name: 'second_name',
     regExp: /([^\s])/,
     isRequired: false
   },
   {
-    name: 'firstLastName',
+    name: 'first_last_name',
     regExp: /([^\s])/,
     isRequired: true
   },
   {
-    name: 'secondLastName',
+    name: 'second_last_name',
     regExp: /([^\s])/,
     isRequired: false
   },
   {
-    name: 'birthDate',
+    name: 'birth_date',
     regExp: '',
     isRequired: true
   },
@@ -143,7 +113,7 @@ const userRules = [
     isRequired: true
   },
   {
-    name: 'analist',
+    name: 'analist_id',
     regExp: '',
     isRequired: true
   }
@@ -152,12 +122,76 @@ const userRules = [
 const Dashboard = () => {  
   const [sortDirection, setSortDirection] = useState('asc');
   const [headerSorted, setHeaderSorted] = useState(null);
-  const [rows, setRows] = useState(rowsData);
+  const [rows, setRows] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [userForm, dispatchUserForm] = useReducer(
     userFormReducer, userDataDefault
   );
   const [userFormErrors, setUserFormErrors] = useState({});
+  const { setLoaderScreen } = useContext(LoaderContext);
+  const { setShowAlert } = useContext(AlertMsgContext);
+  const [analystsOptions, setAnalystsOptions] = useState([]);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    resPerPage: 10
+  });
+  const [querySearch, setQuerySearch] = useState({
+    textSearch: '',
+    statusSearch: ''
+  });
+  const [resetComponent, setResetComponent] = useState(false);
+  const [oldestUser, setOldestUser] = useState({
+    _id: null,
+    full_name: '',
+    created: ''
+  });
+
+  useEffect(() => {
+    (async function() {
+      setLoaderScreen(true);
+      const { page, resPerPage } = pagination;
+      const { textSearch, statusSearch } = querySearch;
+      const usersResponse = await axiosInstance(
+        'get',
+        `/users/?page=${(page + 1)}&resPerPage=${
+          (resPerPage)}&search=${textSearch}&status=${statusSearch}`,
+        {},
+        setShowAlert,
+        false
+      );
+      if (usersResponse?.code === 200) {
+        setTotal(usersResponse.data?.total || 0);
+        setTotalUsers(usersResponse.data?.allTotal || 0);
+        setRows((usersResponse.data?.rows ? 
+          usersResponse.data?.rows.map(user => ({ 
+            ...user, 
+            full_name: `${
+              ((user.first_name ? user.first_name + ' ' : '') || '') + 
+              ((user.second_name ? user.second_name + ' ' : '') || '') +
+              ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
+              ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+            }`,
+            analist: user.analist_id.full_name
+          })) : [])
+        );
+      }
+      const oldestUserResponse = await axiosInstance(
+        'get', `/users/oldest`, {}, setShowAlert, false
+      );
+      if (oldestUserResponse?.code === 200) {
+        setOldestUser({
+          _id: oldestUserResponse.data?.user?._id,
+          full_name: `${oldestUserResponse.data?.user?.first_name} ${
+            oldestUserResponse.data?.user?.first_last_name
+          }`,
+          created: getLabelOfDate(oldestUserResponse.data?.user?.created_at)
+        });
+      }
+      setLoaderScreen(false);
+    })();
+  }, [resetComponent]);
 
   const handleChangeUserForm = (event) => {
     const { name, value } = event.target;
@@ -185,13 +219,32 @@ const Dashboard = () => {
     }
   };
 
-  const handleSaveUser = () => {
+  const handleSaveUser = async () => {
     const newValidation = new FieldsValidator(userRules, userForm);
     const rValidation = newValidation.executeValidation();
-    if (rValidation.errors) setUserFormErrors(rValidation.fields)
+    if (rValidation.errors) {
+      setUserFormErrors(rValidation.fields);
+      setShowAlert(
+        true, 'right', 
+        'Los campos marcado en rojo son requeridos',
+        5000, 'error'
+      );
+    }
     else {
+      setLoaderScreen(true);
       setUserFormErrors({});
-      console.log(userForm);
+      const userResponse = await axiosInstance(
+        'post',
+        '/users/',
+        { ...userForm },
+        setShowAlert,
+        true
+      );
+      if (userResponse?.code === 200) {
+        setResetComponent(!resetComponent);
+        setOpenDialog(false);
+      } else handleFailedResponse(userResponse, setUserFormErrors);
+      setLoaderScreen(false);
     }
   };
 
@@ -204,6 +257,91 @@ const Dashboard = () => {
     setOpenDialog(true);
   };
 
+  const handleGetAnalysts = async () => {
+    if (analystsOptions.length === 0) {
+      setLoaderScreen(true);
+      const analystResponse = await axiosInstance(
+        'get',
+        '/analysts/',
+        {},
+        setShowAlert,
+        false
+      );
+      if (analystResponse?.code === 200) {
+        setAnalystsOptions(analystResponse.data?.analysts || []);
+      }
+      setLoaderScreen(false);
+    }
+  };
+
+  const handleFilters = async () => {
+    const { textSearch, statusSearch } = querySearch;
+    if (textSearch || statusSearch) {
+      setLoaderScreen(true);
+      setPagination({ page: 0, resPerPage: 10 });
+      const filterResults = await axiosInstance(
+        'get', 
+        `/users/?page=1&resPerPage=10&search=${textSearch}&status=${statusSearch}`,
+        {},
+        setShowAlert,
+        false
+      );
+      if (filterResults?.code === 200) {
+        setTotal(filterResults.data?.total || 0);
+        setTotalUsers(filterResults.data?.allTotal || 0);
+        setRows((filterResults.data?.rows ? 
+          filterResults.data?.rows.map(user => ({ 
+            ...user, 
+            full_name: `${
+              ((user.first_name ? user.first_name + ' ' : '') || '') + 
+              ((user.second_name ? user.second_name + ' ' : '') || '') +
+              ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
+              ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+            }`,
+            analist: user.analist_id.full_name
+          })) : [])
+        );
+      }
+      setLoaderScreen(false);
+    }
+  };
+
+  const handleCleanFilters = async () => {
+    setLoaderScreen(true);
+    setQuerySearch({
+      textSearch: '',
+      statusSearch: ''
+    });
+    setPagination({
+      page: 0,
+      resPerPage: 10
+    });
+    const cleanFilterResults = await axiosInstance(
+      'get', 
+      `/users/?page=1&resPerPage=10&search=&status=`,
+      {},
+      setShowAlert,
+      false
+    );
+    if (cleanFilterResults?.code === 200) {
+      setTotal(cleanFilterResults.data?.total || 0);
+      setTotalUsers(cleanFilterResults.data?.allTotal || 0);
+      setRows((cleanFilterResults.data?.rows ? 
+        cleanFilterResults.data?.rows.map(user => ({ 
+          ...user, 
+          full_name: `${
+            ((user.first_name ? user.first_name + ' ' : '') || '') + 
+            ((user.second_name ? user.second_name + ' ' : '') || '') +
+            ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
+            ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+          }`,
+          analist: user.analist_id.full_name
+        })) : [])
+      );
+    }
+    setLoaderScreen(false);
+  };
+
   return (
     <GlobalLayout>
       <div className='dash-container'>
@@ -214,7 +352,7 @@ const Dashboard = () => {
             </div>
             <div className='dash-small-card-text'>
               <p>Total de usuarios:</p>
-              <h2 className='mTn-24'>2254</h2>
+              <h2 className='mTn-24'>{totalUsers}</h2>
             </div>
             <Button 
               className='dash-card-btn color-blue'
@@ -233,15 +371,22 @@ const Dashboard = () => {
             <div className='dash-small-card-text'>
               <p>Usuario rezagado:</p>
               <h3 className='mTn-24 mBn-8'>
-                Marcos Larcamón
+                {oldestUser.full_name}
               </h3>
-              <small>14 de noviembre de 2020</small>
+              <small>{oldestUser.created}</small>
             </div>
             <Button 
               className='dash-card-btn color-orange'
               variant="contained" 
               endIcon={<AssignmentTurnedInIcon />}
               fullWidth={true}
+              onClick={() => {
+                setShowAlert(
+                  true, 'right', 
+                  'Funcionalidad aún en desarrollo...',
+                  5000, 'warning'
+                );
+              }}
             >
               Atender
             </Button>
@@ -264,29 +409,47 @@ const Dashboard = () => {
                 autoWidth
                 label="Estatus"
                 style={{ height:'40px' }}
-                defaultValue = ""
+                value={querySearch.statusSearch}
+                onChange={(e) => setQuerySearch({
+                  ...querySearch,
+                  statusSearch: e.target.value
+                })}
               >
                 <MenuItem value="">
                   <em>Ninguno</em>
                 </MenuItem>
-                <MenuItem value={1}>Pendiente</MenuItem>
-                <MenuItem value={2}>En proceso</MenuItem>
-                <MenuItem value={3}>Completado</MenuItem>
+                <MenuItem value={'PENDIENTE'}>Pendiente</MenuItem>
+                <MenuItem value={'EN PROCESO'}>En proceso</MenuItem>
+                <MenuItem value={'COMPLETADO'}>Completado</MenuItem>
               </Select>
             </FormControl>
             <TextField 
               label="Id o nombre" 
               variant="outlined" 
               className='dash-text-search'
+              onChange={(e) => setQuerySearch({
+                ...querySearch,
+                textSearch: e.target.value
+              })}
+              value={querySearch.textSearch}
             />
           </div>
           <Button 
-            className='dash-card-btn color-blue-light'
+            className='dash-card-btn dash-btn-filter color-blue-light'
             variant="contained" 
             endIcon={<FilterAltIcon />}
             fullWidth={true}
+            onClick={() => handleFilters()}
           >
             Filtrar
+          </Button>
+          <Button 
+            className='dash-btn-clean-filter color-blue-light'
+            variant="contained" 
+            fullWidth={true}
+            onClick={() => handleCleanFilters()}
+          >
+            <DeleteIcon />
           </Button>
         </div>
       </div>
@@ -296,6 +459,22 @@ const Dashboard = () => {
           rows={rows}
           sortDirection={sortDirection}
           handleSort={handleSort}
+          renderCollapseData={(rowData) => {
+            return (
+              <UserDataCard 
+                data={rowData}
+                setResetComponent={setResetComponent}
+                resetComponent={resetComponent}
+              />
+            );
+          }}
+          handlePagination={(newPage, newResPerPage) => {
+            if (!newResPerPage) newResPerPage = pagination.resPerPage;
+            setPagination({ page: newPage, resPerPage: newResPerPage });
+            setResetComponent(!resetComponent);
+          }}
+          pagination={pagination}
+          total={total}
         />
       </div>
       <FullScreenDialog 
@@ -305,7 +484,8 @@ const Dashboard = () => {
         handleAction={() => handleSaveUser()}
         labelAction={'Guardar'}
         dialogBody={userFormDialogBody(
-          handleChangeUserForm, userForm, userFormErrors
+          handleChangeUserForm, userForm, userFormErrors,
+          handleGetAnalysts, analystsOptions
         )}
       />
     </GlobalLayout>

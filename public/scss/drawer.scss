@@ -1,0 +1,29 @@
+.drawer-wrapper {
+  position: absolute !important;
+  width: 240px;
+  background-color: $gray-secondary !important;
+}
+
+.drawer-wrapper.open > div:nth-of-type(1) {
+  background-color: $gray-secondary !important;
+  width: 240px !important;
+}
+
+.drawer-wrapper.close > div:nth-of-type(1) {
+  background-color: $gray-secondary !important;
+  width: calc(72px + 1px) !important;
+}
+
+.drawer-item-selected {
+  background-color: #d0d0d0 !important;
+}
+
+@media screen and (max-width: 900px) and (min-width: 100px) {
+  .drawer-wrapper.open > div:nth-of-type(1) {
+    width: 200px !important;
+  }
+
+  .drawer-wrapper.close > div:nth-of-type(1) {
+    width: calc(52px + 1px) !important;
+  }
+}
