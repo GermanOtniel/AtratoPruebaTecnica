@@ -3,12 +3,14 @@ export const userRules = [
     name: "email",
     // eslint-disable-next-line
     regExp: /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
-    isRequired: true
+    isRequired: true,
+    invalidMessage: "Debe de ser un correo electrónico válido"
   },
   {
     name: "phone_number",
     regExp: /^\d+$/,
-    isRequired: true
+    isRequired: true,
+    invalidMessage: "Debe de ser un número telefónico válido"
   },
   {
     name: "first_name",

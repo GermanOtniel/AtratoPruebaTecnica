@@ -2,21 +2,22 @@ const modelReponse = require("../services/util/responses");
 
 const validationBody = (schema, property) => {
   return (req, res, next) => {
-  const { error } = schema.validate(req.body, { abortEarly: false });
-  const valid = error == null;
-  
-  if (valid) {
-    next();
-  } else {
-    const { details } = error;
-    let mapMessage = details.map((detailError) => {
-      detailError.behindMessage = detailError.message;
-      detailError.message = "Campo inválido";
-      return detailError;
-    });
-      return modelReponse.not_unprocessable_entity(res)("Error de validación: Revisa los campos marcados en rojo", {
-        errors: mapMessage,
+    const { error } = schema.validate(req.body, { abortEarly: false });
+    const valid = error == null;
+    
+    if (valid) {
+      next();
+    } else {
+      const { details } = error;
+      let mapMessage = details.map((detailError) => {
+        detailError.behindMessage = detailError.message;
+        detailError.message = "Campo inválido";
+        return detailError;
       });
+      return modelReponse.not_unprocessable_entity(res)(
+        "Error de validación: Revisa los campos marcados en rojo", 
+        { errors: mapMessage }
+      );
     }
   };
 };

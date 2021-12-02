@@ -2,7 +2,6 @@ import { getLabelOfDate } from "../util/formattDates";
 import { handleFailedResponse } from "../util/handleErrors";
 import { axiosInstance } from "./axios";
 
-
 export const getUsers = async (
   pagination, querySearch, setShowAlert, 
   setTotal, setTotalUsers, setRows

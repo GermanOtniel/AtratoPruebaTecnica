@@ -1,5 +1,6 @@
 import React, { useReducer, useState, useContext, useEffect } from "react";
-import GlobalLayout from "../../layout/GeneralLayout";
+// material ui imports
+import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import Button from "@mui/material/Button";
 import QueryBuilderIcon from "@mui/icons-material/QueryBuilder";
@@ -11,16 +12,18 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import CollapsibleTable from "../../shared/TableComponent";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+// dependences externals imports
 import _ from "lodash";
+// local files imports
+import LoaderContext from "../../../contexts/loaderScreen/LoaderContext";
+import AlertMsgContext from "../../../contexts/alertMessage/AlertMsgContext";
+import GlobalLayout from "../../layout/GeneralLayout";
 import FullScreenDialog from "../../shared/FullScreenDialog";
+import UserDataCard from "../../shared/UserDataCard";
 import { userFormDialogBody } from "../../../util/drawerElements";
 import { userFormReducer } from "../../../reducers/userFormReducer";
 import { FieldsValidator } from "../../../util/classes/FieldsValidator";
-import LoaderContext from "../../../contexts/loaderScreen/LoaderContext";
-import AlertMsgContext from "../../../contexts/alertMessage/AlertMsgContext";
-import DeleteIcon from "@mui/icons-material/Delete";
-import UserDataCard from "../../shared/UserDataCard";
-import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import { columnHeaders } from "../../../util/columnsTable";
 import { userRules } from "../../../util/rulesForms";
 import { 
@@ -63,17 +66,15 @@ const Dashboard = () => {
   const [total, setTotal] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
-  const [userForm, dispatchUserForm] = useReducer(
-    userFormReducer, userDataDefault
-  );
   const [userFormErrors, setUserFormErrors] = useState({});
-  const { setLoaderScreen } = useContext(LoaderContext);
-  const { setShowAlert } = useContext(AlertMsgContext);
   const [analystsOptions, setAnalystsOptions] = useState([]);
   const [pagination, setPagination] = useState(paginationDefault);
   const [querySearch, setQuerySearch] = useState(querySearchDefault);
   const [resetComponent, setResetComponent] = useState(false);
   const [oldestUser, setOldestUser] = useState(oldestUserDef);
+  const [userForm, dispatchUserForm] = useReducer(userFormReducer, userDataDefault);
+  const { setLoaderScreen } = useContext(LoaderContext);
+  const { setShowAlert } = useContext(AlertMsgContext);
 
   useEffect(() => {
     (async function() {
@@ -128,6 +129,8 @@ const Dashboard = () => {
     else {
       setLoaderScreen(true);
       setUserFormErrors({});
+      setPagination(paginationDefault);
+      setQuerySearch(querySearchDefault);
       await createNewUser(
         userForm, setShowAlert, setResetComponent, 
         setOpenDialog, resetComponent, setUserFormErrors

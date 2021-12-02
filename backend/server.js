@@ -4,7 +4,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const app = express();
 const mongoose = require("mongoose");
-const cors         = require("cors");
+const cors = require("cors");
 
 env(__dirname + "/.env");
 

@@ -124,7 +124,7 @@ module.exports = {
     });
   },
   /** 
-   * Create a new user
+   * Get oldest user to attend
    * 
    * GET /api/users/oldest
    * params:
@@ -147,7 +147,7 @@ module.exports = {
     });
   },
   /** 
-   * Create a new user
+   * Get user list per pagination and query search
    * 
    * GET /api/users/
    * query: {
@@ -204,7 +204,7 @@ module.exports = {
     })
   },
     /** 
-   * Create a new user
+   * Delete an user
    * 
    * DELETE /api/users/:id
    * params: id || String

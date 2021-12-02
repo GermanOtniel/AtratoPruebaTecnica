@@ -97,7 +97,7 @@ body {
 }
 
 .dash-card.color-orange {
-  background-color: $orange-secondary;
+  background-color: $orange-primary;
 }
 
 .dash-card.color-blue {
@@ -147,11 +147,11 @@ body {
 }
 
 .dash-card-btn.color-orange {
-  background-color: $orange-secondary;
+  background-color: $orange-primary;
 }
 
 .dash-card-btn.color-orange:hover {
-  background-color: $orange-secondary;
+  background-color: $orange-primary;
 }
 
 .dash-card-btn.color-blue-light {
@@ -415,8 +415,10 @@ body {
   }
 
   .user-data-card {
-    width: 400px;
+    max-width: 400px;
     padding: 20px 15px;
+    width: 80vw;
+    min-width: 280px;
   }
 
   .user-data-img-name > div:nth-of-type(1) > div {

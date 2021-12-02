@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import LoaderContext from "../../contexts/loaderScreen/LoaderContext";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import LoaderContext from "../../contexts/loaderScreen/LoaderContext";
 
 
 const LoaderComponent = () => {
