@@ -67,7 +67,8 @@ module.exports = {
         card_number: creditCard.data.cardNumber,
         cvv: creditCard.data.cvv,
         pin: creditCard.data.pin,
-        exp: getExpirationDateOfCreditCard(creditCard.data.date)
+        exp: getExpirationDateOfCreditCard(creditCard.data.date),
+        card_provider: creditCard.data.type
       });
       return modelResponse.sucess_Ok(res)("Usuario creado correctamente", {
         user: userCreated

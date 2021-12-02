@@ -1,5 +1,5 @@
 import axios from "axios";
-import { detectIfAnErrorOcurred, renderErrorAlertMsg, renderSuccessAlertMsg } from "../util/handleErrors";
+import { detectIfAnErrorOcurred, renderErrorAlertMsg } from "../util/handleErrors";
 
 export const axiosInstance = async (
   method, url, data, setAlert, showSuccessAlert = false
@@ -19,6 +19,9 @@ export const axiosInstance = async (
       }
     }
   } catch (error) {
-    renderErrorAlertMsg(setAlert, (error?.message || ""));
+    renderErrorAlertMsg(
+      setAlert, 
+      (error?.response?.data?.data?.message || error?.message || "")
+    );
   }
 };

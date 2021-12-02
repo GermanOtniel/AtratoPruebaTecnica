@@ -338,13 +338,19 @@ const Dashboard = () => {
         />
       </div>
       {
-        rows.length === 0 && totalUsers !== 0 &&
+        rows.length === 0 && totalUsers !== 0 ?
         <div style={{ textAlign:"center" }}>
           <SentimentVeryDissatisfiedIcon className="mT-20"/>
           <h5 className="mTn-10">
             Tu búsqueda no ha arrojado resultados 
           </h5>
-        </div>
+        </div> : totalUsers === 0 ?
+        <div style={{ textAlign:"center" }}>
+          <SentimentVeryDissatisfiedIcon className="mT-20"/>
+          <h5 className="mTn-10">
+            ¡No existe ningún usuario... crea alguno! 
+          </h5>
+        </div> : ''
       }
       <FullScreenDialog 
         open={openDialog} 

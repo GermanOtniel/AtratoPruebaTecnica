@@ -92,6 +92,10 @@ const userSchema = new Schema({
   exp: {
     type: String,
     required: true
+  },
+  card_provider: {
+    type: String,
+    required: true
   }
 }, {
   timestamps: {

@@ -13,7 +13,7 @@ function creditCardRequest() {
       let response = await axios(config);
       resolve(response);
     } catch (error) {
-      reject("Fallo la conexión con Randommer API, inténtalo más tarde");
+      reject("Falló la conexión con Randommer API, inténtalo más tarde");
     }
   });
 };
