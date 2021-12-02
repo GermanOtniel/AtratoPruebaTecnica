@@ -14,9 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreIcon from "@mui/icons-material/MoreVert";
 
 const drawerWidth = 240;
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== "open"})(({ 
+  theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
@@ -33,7 +32,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Navbar = ({ open, handleDrawerOpen }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);

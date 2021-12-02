@@ -4,15 +4,15 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Avatar from "@mui/material/Avatar";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
-import { getLabelOfDate } from "../../util/formattDates";
-import FullScreenDialog from "./FullScreenDialog";
-import { userFormDialogBody } from "../../util/drawerElements";
-import { userFormReducer } from "../../reducers/userFormReducer";
 import _ from "lodash";
 import LoaderContext from "../../contexts/loaderScreen/LoaderContext";
 import AlertMsgContext from "../../contexts/alertMessage/AlertMsgContext";
-import { FieldsValidator } from "../../util/classes/FieldsValidator";
+import FullScreenDialog from "./FullScreenDialog";
 import ModalConfirm from "./ModalConfirm";
+import { getLabelOfDate } from "../../util/formattDates";
+import { userFormDialogBody } from "../../util/drawerElements";
+import { userFormReducer } from "../../reducers/userFormReducer";
+import { FieldsValidator } from "../../util/classes/FieldsValidator";
 import { modalDeleteBody } from "../../util/utilModals";
 import { userRules } from "../../util/rulesForms";
 import { 
@@ -21,13 +21,14 @@ import {
 
 
 const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
-  const { full_name, phone_number, status, _id, email, analist, birth_date } = data;
+  const { 
+    full_name, phone_number, status, _id, 
+    email, analist, birth_date 
+  } = data;
   const userDataNecessary = _.omit(
     data, 
-    [
-      "analist", "full_name", "pin", "exp", "updated_at",
-      "cvv", "card_number", "_id", "__v", "created_at", "f_name"
-    ]);
+    [ "analist", "full_name", "pin", "exp", "updated_at",
+      "cvv", "card_number", "_id", "__v", "created_at", "f_name"]);
   const [userForm, dispatchUserForm] = useReducer(
     userFormReducer, 
     { 
@@ -39,9 +40,9 @@ const UserDataCard = ({ data, setResetComponent, resetComponent }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [userFormErrors, setUserFormErrors] = useState({});
   const [analystsOptions, setAnalystsOptions] = useState([]);
+  const [deleteModal, setDeleteModal] = useState(false);
   const { setLoaderScreen } = useContext(LoaderContext);
   const { setShowAlert } = useContext(AlertMsgContext);
-  const [deleteModal, setDeleteModal] = useState(false);
 
   const handleUpdateUser = async () => {
     const newValidation = new FieldsValidator(userRules, userForm);
