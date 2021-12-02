@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from '@mui/material/styles';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import TablePagination from '@mui/material/TablePagination';
-import TableSortLabel, { tableSortLabelClasses } from '@mui/material/TableSortLabel';
+import React, { useEffect, useState } from "react";
+import { styled } from "@mui/material/styles";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import TablePagination from "@mui/material/TablePagination";
+import TableSortLabel, { tableSortLabelClasses } from "@mui/material/TableSortLabel";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => {
   return {
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: '#3363FF',
+      backgroundColor: "#3363FF",
       color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -29,8 +29,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => {
 const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => {
   return {
     [`&.${tableSortLabelClasses.root}:hover`]: {
-      backgroundColor: '#3363FF',
-      color: 'white',
+      backgroundColor: "#3363FF",
+      color: "white",
     }
   };
 });
@@ -42,7 +42,7 @@ function Row(props) {
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <StyledTableCell>
           <IconButton
             aria-label="expand row"
@@ -84,11 +84,11 @@ const CollapsibleTable = ({
   columnHeaders, rows, sortDirection, pagination, total,
   handleSort, renderCollapseData, handlePagination
 }) => {
-  const [collapseOpen, setCollapseOpen] = useState('');
+  const [collapseOpen, setCollapseOpen] = useState("");
   const [collapseData, setCollapseData] = useState(null);
 
   useEffect(() => {
-    setCollapseOpen('');
+    setCollapseOpen("");
   }, [rows]);
 
   const handleCollapseOpenAndShowData = (rowData) => {
@@ -116,7 +116,7 @@ const CollapsibleTable = ({
         onRowsPerPageChange={(e) => handleChangeRowsPerPage(e)}
       />
       <TableContainer 
-        className='dash-table-container'
+        className="dash-table-container"
         component={Paper} 
       >
         <Table aria-label="collapsible table">

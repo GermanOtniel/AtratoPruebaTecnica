@@ -1,4 +1,4 @@
-const modelReponse = require('../services/util/responses');
+const modelReponse = require("../services/util/responses");
 
 const validationBody = (schema, property) => {
   return (req, res, next) => {
@@ -11,10 +11,10 @@ const validationBody = (schema, property) => {
     const { details } = error;
     let mapMessage = details.map((detailError) => {
       detailError.behindMessage = detailError.message;
-      detailError.message = 'Campo inválido';
+      detailError.message = "Campo inválido";
       return detailError;
     });
-      return modelReponse.not_unprocessable_entity(res)('Error de validación: Revisa los campos marcados en rojo', {
+      return modelReponse.not_unprocessable_entity(res)("Error de validación: Revisa los campos marcados en rojo", {
         errors: mapMessage,
       });
     }
@@ -32,10 +32,10 @@ const validationParams = (schema, property) => {
       const { details } = error;
       let mapMessage = details.map((detailError) => {
         detailError.behindMessage = detailError.message;
-        detailError.message = 'Campo inválido';
+        detailError.message = "Campo inválido";
         return detailError;
       });
-      return modelReponse.not_unprocessable_entity(res)('Error de validación', {
+      return modelReponse.not_unprocessable_entity(res)("Error de validación", {
         errors: mapMessage,
       });
     }
@@ -53,10 +53,10 @@ const validationBodyId = (schema, property) => {
       var { details } = error;
       let mapMessage = details.map((detailError) => {
         detailError.behindMessage = detailError.message;
-        detailError.message = 'Campo inválido';
+        detailError.message = "Campo inválido";
         return detailError;
       });
-      return modelReponse.not_unprocessable_entity(res)('Error de validación: Revisa los campos marcados en rojo', {
+      return modelReponse.not_unprocessable_entity(res)("Error de validación: Revisa los campos marcados en rojo", {
         errors: mapMessage,
       });
     }
@@ -74,10 +74,10 @@ const validationQueryParams = (schema, property) => {
       const { details } = error;
       let mapMessage = details.map((detailError) => {
         detailError.behindMessage = detailError.message;
-        detailError.message = 'Campo inválido';
+        detailError.message = "Campo inválido";
         return detailError;
       });
-      return modelReponse.not_unprocessable_entity(res)('Error de validación', {
+      return modelReponse.not_unprocessable_entity(res)("Error de validación", {
         errors: mapMessage,
       });
     }

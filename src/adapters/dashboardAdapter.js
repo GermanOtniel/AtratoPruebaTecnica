@@ -10,7 +10,7 @@ export const getUsers = async (
   const { page, resPerPage } = pagination;
       const { textSearch, statusSearch } = querySearch;
       const usersResponse = await axiosInstance(
-        'get',
+        "get",
         `/users/?page=${(page + 1)}&resPerPage=${
           (resPerPage)}&search=${textSearch}&status=${statusSearch}`,
         {},
@@ -24,10 +24,10 @@ export const getUsers = async (
           usersResponse.data?.rows.map(user => ({ 
             ...user, 
             full_name: `${
-              ((user.first_name ? user.first_name + ' ' : '') || '') + 
-              ((user.second_name ? user.second_name + ' ' : '') || '') +
-              ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-              ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+              ((user.first_name ? user.first_name + " " : "") || "") + 
+              ((user.second_name ? user.second_name + " " : "") || "") +
+              ((user.first_last_name ? user.first_last_name + " " : "") || "") +
+              ((user.second_last_name ? user.second_last_name + " " : "") || "")
             }`,
             analist: user.analist_id.full_name
           })) : [])
@@ -39,7 +39,7 @@ export const getOldestUser = async (
   setShowAlert, setOldestUser
 ) => {
   const oldestUserResponse = await axiosInstance(
-    'get', `/users/oldest`, {}, setShowAlert, false
+    "get", `/users/oldest`, {}, setShowAlert, false
   );
   if (oldestUserResponse?.code === 200) {
     setOldestUser({
@@ -57,8 +57,8 @@ export const createNewUser = async (
   setOpenDialog, resetComponent, setUserFormErrors
 ) => {
   const userResponse = await axiosInstance(
-    'post',
-    '/users/',
+    "post",
+    "/users/",
     { ...userForm },
     setShowAlert,
     true
@@ -71,8 +71,8 @@ export const createNewUser = async (
 
 export const getAnalysts = async (setShowAlert, setAnalystsOptions) => {
   const analystResponse = await axiosInstance(
-    'get',
-    '/analysts/',
+    "get",
+    "/analysts/",
     {},
     setShowAlert,
     false
@@ -88,7 +88,7 @@ export const getUsersByFilters = async (
 ) => {
   const { textSearch, statusSearch } = querySearch;
   const filterResults = await axiosInstance(
-    'get', 
+    "get", 
     `/users/?page=1&resPerPage=10&search=${
       textSearch.trim()}&status=${statusSearch}`,
     {},
@@ -102,10 +102,10 @@ export const getUsersByFilters = async (
       filterResults.data?.rows.map(user => ({ 
         ...user, 
         full_name: `${
-          ((user.first_name ? user.first_name + ' ' : '') || '') + 
-          ((user.second_name ? user.second_name + ' ' : '') || '') +
-          ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-          ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+          ((user.first_name ? user.first_name + " " : "") || "") + 
+          ((user.second_name ? user.second_name + " " : "") || "") +
+          ((user.first_last_name ? user.first_last_name + " " : "") || "") +
+          ((user.second_last_name ? user.second_last_name + " " : "") || "")
         }`,
         analist: user.analist_id.full_name
       })) : [])
@@ -118,7 +118,7 @@ export const updateUser = async (
   setResetComponent, setOpenDialog, setUserFormErrors
 ) => {
   const userUpdate = await axiosInstance(
-    'put',
+    "put",
     `/users/${_id}`,
     { ...userForm },
     setShowAlert,
@@ -135,7 +135,7 @@ export const deleteUser = async (
   setDeleteModal, setOpenDialog, setUserFormErrors
 ) => {
   const deleteUser = await axiosInstance(
-    'delete',
+    "delete",
     `/users/${_id}`,
     {},
     setShowAlert,

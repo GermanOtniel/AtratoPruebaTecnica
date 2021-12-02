@@ -1,48 +1,48 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const { 
   validationBody, validationBodyId, validationQueryParams 
-} = require('../middlewares/validations');
-const schemas_validations = require('../services/util/schemas/users');
-const usersController = require('../controllers/users');
+} = require("../middlewares/validations");
+const schemas_validations = require("../services/util/schemas/users");
+const usersController = require("../controllers/users");
 
-router.get('/test', (req, res) => {
+router.get("/test", (req, res) => {
   res.status(200).send({
     message: "Welcome to the users API"
   });
 });
 
 router.post(
-  '/',
+  "/",
   validationBody(schemas_validations.user_create),
   usersController.create
 );
 
 router.put(
-  '/:id',
+  "/:id",
   validationBodyId(schemas_validations.user_update),
   usersController.update
 );
 
 router.patch(
-  '/:id',
+  "/:id",
   validationBodyId(schemas_validations.user_update),
   usersController.update
 );
 
 router.get(
-  '/oldest',
+  "/oldest",
   usersController.getOldest
 );
 
 router.get(
-  '/',
+  "/",
   validationQueryParams(schemas_validations.users_list),
   usersController.getAllPerPage
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   validationBodyId(schemas_validations.user_delete),
   usersController.delete
 );

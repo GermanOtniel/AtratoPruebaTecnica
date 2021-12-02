@@ -1,6 +1,6 @@
-@import './colors.scss';
-@import './navbar.scss';
-@import './drawer.scss';
+@import "./colors.scss";
+@import "./navbar.scss";
+@import "./drawer.scss";
 
 body {
   background-color: transparent;
@@ -446,7 +446,7 @@ body {
 
   .user-data-data > div:nth-of-type(1) > div > span:nth-of-type(1) > h4::after {
     visibility: visible;
-    content: 'F. NACIMIENTO' !important;
+    content: "F. NACIMIENTO" !important;
     display: block;
   }
 
@@ -456,7 +456,7 @@ body {
 
   .user-data-data > div:nth-of-type(1) > div > span:nth-of-type(2) > h4::after {
     visibility: visible;
-    content: 'ANALISTA' !important;
+    content: "ANALISTA" !important;
     display: block;
   }
 

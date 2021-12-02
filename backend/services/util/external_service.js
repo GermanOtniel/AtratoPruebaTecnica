@@ -1,19 +1,19 @@
-const axios = require('axios');
+const axios = require("axios");
 
 function creditCardRequest() {
   return new Promise(async (resolve, reject) => {
     try {
       const config = {
-        method: 'GET',
+        method: "GET",
         url: process.env.RANDOMMER_API,
         headers: {
-          'X-Api-Key': process.env.API_KEY_RANDOMMER
+          "X-Api-Key": process.env.API_KEY_RANDOMMER
         }
       }
       let response = await axios(config);
       resolve(response);
     } catch (error) {
-      reject('Fallo la conexión con Randommer API, inténtalo más tarde');
+      reject("Fallo la conexión con Randommer API, inténtalo más tarde");
     }
   });
 };

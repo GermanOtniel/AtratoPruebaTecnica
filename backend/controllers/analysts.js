@@ -1,5 +1,5 @@
-const analystModel = require('../models/Analyst');
-const modelResponse = require('../services/util/responses');
+const analystModel = require("../models/Analyst");
+const modelResponse = require("../services/util/responses");
 
 module.exports = {
   /** 
@@ -15,7 +15,7 @@ module.exports = {
       full_name: req.body.full_name
     })
     .then((result) => {
-      return modelResponse.sucess_Ok(res)('Analista creado correctamente', {
+      return modelResponse.sucess_Ok(res)("Analista creado correctamente", {
         analyst: result
       });
     })
@@ -31,9 +31,9 @@ module.exports = {
    * **/
   list(req, res) {
     return analystModel.find()
-    .select('_id full_name')
+    .select("_id full_name")
     .then((analysts) => {
-      return modelResponse.sucess_Ok(res)('Analistas existentes', {
+      return modelResponse.sucess_Ok(res)("Analistas existentes", {
         analysts: analysts.map(analyst => ({ 
           value: analyst._id, label: analyst.full_name 
         }))

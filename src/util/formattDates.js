@@ -1,5 +1,5 @@
 export const getLabelOfDate = (stringDate) => {
-  const dateSplitted = stringDate.slice(0, 10).split('-');
+  const dateSplitted = stringDate.slice(0, 10).split("-");
   const date = new Date(
     parseInt(dateSplitted[0]),
     parseInt(dateSplitted[1]) - 1,
@@ -9,9 +9,9 @@ export const getLabelOfDate = (stringDate) => {
     12
   );
   const options = {
-    day:'numeric',
-    month: 'long',
-    year:'numeric'
+    day: "numeric",
+    month: "long",
+    year: "numeric"
   };
-  return date.toLocaleDateString('es-MX', options);
+  return date.toLocaleDateString("es-MX", options);
 };

@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi');
+const Joi = require("@hapi/joi");
 
 const schemas = {
   analyst_create: Joi.object().keys({

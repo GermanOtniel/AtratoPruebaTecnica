@@ -14,12 +14,12 @@ export class FieldsValidator {
           !field.regExp.test(this.objectToCheck[field.name]) && 
           !(!this.objectToCheck[field.name] && !field.isRequired)) {
           missingFields[field.name] = field.invalidMessage || 
-            'El contenido del campo es inválido';
+            "El contenido del campo es inválido";
         }
       }
       if ((!fieldsObjectToCheck.includes(field.name) || !this.objectToCheck[field.name]) && field.isRequired) {
         missingFields[field.name] = field.requiredMessage || 
-          'Este campo es requerido';
+          "Este campo es requerido";
       }
     };
 

@@ -1,10 +1,10 @@
-import React from 'react';
-import WarningIcon from '@mui/icons-material/Warning';
+import React from "react";
+import WarningIcon from "@mui/icons-material/Warning";
 
 export const modalDeleteBody = () => {
   return (
     <React.Fragment>
-      <div style={{ textAlign:'center', color:'rgb(199, 2, 2)' }}>
+      <div style={{ textAlign: "center", color: "rgb(199, 2, 2)" }}>
         <WarningIcon />
       </div>
       <p>

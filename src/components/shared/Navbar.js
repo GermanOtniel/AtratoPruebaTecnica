@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import { styled } from '@mui/material/styles';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Badge from '@mui/material/Badge';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import MailIcon from '@mui/icons-material/Mail';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import MuiAppBar from '@mui/material/AppBar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MoreIcon from '@mui/icons-material/MoreVert';
+import React, { useState } from "react";
+import { styled } from "@mui/material/styles";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import Badge from "@mui/material/Badge";
+import MenuIcon from "@mui/icons-material/Menu";
+import Toolbar from "@mui/material/Toolbar";
+import MailIcon from "@mui/icons-material/Mail";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import MuiAppBar from "@mui/material/AppBar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreIcon from "@mui/icons-material/MoreVert";
 
 const drawerWidth = 240;
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -55,19 +55,19 @@ const Navbar = ({ open, handleDrawerOpen }) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  const menuId = 'primary-search-account-menu';
+  const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={menuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}
@@ -77,19 +77,19 @@ const Navbar = ({ open, handleDrawerOpen }) => {
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
+  const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
       anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{
-        vertical: 'top',
-        horizontal: 'right',
+        vertical: "top",
+        horizontal: "right",
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
@@ -134,7 +134,7 @@ const Navbar = ({ open, handleDrawerOpen }) => {
     <React.Fragment>
       <AppBar 
         className={
-          'navbar ' + (open ? 'open' : 'close')
+          "navbar " + (open ? "open" : "close")
         } 
         position="fixed" 
         open={open}
@@ -145,23 +145,23 @@ const Navbar = ({ open, handleDrawerOpen }) => {
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              marginRight: '36px',
-              ...(open && { display: 'none' }),
+              marginRight: "36px",
+              ...(open && { display: "none" }),
             }}
           >
             <MenuIcon />
           </IconButton>
           { open ?
-            <p className='navbar-greeting'>
+            <p className="navbar-greeting">
               ¡Hola! <strong>Sergio García</strong>
             </p> : 
             <img 
-              src={process.env.PUBLIC_URL + '/imgs/ColorLogo.png'} 
-              alt='Logo atrato'
-              className='navbar-logo'
+              src={process.env.PUBLIC_URL + "/imgs/ColorLogo.png"} 
+              alt="Logo atrato"
+              className="navbar-logo"
             /> }
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton 
               size="large" 
               aria-label="show 4 new mails" 
@@ -189,7 +189,7 @@ const Navbar = ({ open, handleDrawerOpen }) => {
               <AccountCircle />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"

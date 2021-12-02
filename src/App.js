@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import Dashboard from './components/pages/dashboard/Dashboard';
-import LoaderContext from './contexts/loaderScreen/LoaderContext';
-import AlertMsgContext from './contexts/alertMessage/AlertMsgContext';
+import React, { useState } from "react";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import Dashboard from "./components/pages/dashboard/Dashboard";
+import LoaderContext from "./contexts/loaderScreen/LoaderContext";
+import AlertMsgContext from "./contexts/alertMessage/AlertMsgContext";
 
 const App = (props) => {
   const [statusLoader, setStatusLoader] = useState(false);
   const [showAlert, setShowAlert] = useState({
-    show: false, variant: 'right', msg: '',
-    duration: 5000, severity: 'success'
+    show: false, variant: "right", msg: "",
+    duration: 5000, severity: "success"
   });
 
   const handleSetShowAlert = (show, variant, msg, duration, severity) => {

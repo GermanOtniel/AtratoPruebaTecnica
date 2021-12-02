@@ -21,19 +21,19 @@ export const parseErrorMessageArray = (errors, setFormErrors) => {
 export const renderErrorAlertMsg = (setAlert, message) => {
   setAlert(
     true,
-    'right',
-    message || 'Ha ocurrido un error inesperado, inténtalo más tarde...',
+    "right",
+    message || "Ha ocurrido un error inesperado, inténtalo más tarde...",
     5000,
-    'error'
+    "error"
   );
 };
 
 export const renderSuccessAlertMsg = (setAlert, message) => {
   setAlert(
     true,
-    'right',
-    message || '¡La acción se ha efectuado exitosamente!',
+    "right",
+    message || "¡La acción se ha efectuado exitosamente!",
     5000,
-    'success'
+    "success"
   );
 };

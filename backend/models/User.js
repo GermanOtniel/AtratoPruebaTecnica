@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema   = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -7,7 +7,7 @@ const userSchema = new Schema({
     required: true,
     validate: {
       validator: function(v, done) {
-        const self = this["email"] ? this : this.getUpdate()['$set'];
+        const self = this["email"] ? this : this.getUpdate()["$set"];
         return new Promise(async(resolve, reject) => {
           mongoose.model("User").find({ 
             _id: { $ne: self._id }, email: self.email 
@@ -19,7 +19,7 @@ const userSchema = new Schema({
           .catch(err => reject(err))
         })
       },
-      message: 'Un usuario con el mismo correo electrónico ha sido creado anteriormente'
+      message: "Un usuario con el mismo correo electrónico ha sido creado anteriormente"
     }
   },
   analist_id: {
@@ -56,7 +56,7 @@ const userSchema = new Schema({
     required: true,
     validate: {
       validator: function(v, done) {
-        const self = this["phone_number"] ? this : this.getUpdate()['$set'];
+        const self = this["phone_number"] ? this : this.getUpdate()["$set"];
         return new Promise(async(resolve, reject) => {
           mongoose.model("User").find({ 
             _id: { $ne: self._id }, phone_number: self.phone_number 
@@ -68,13 +68,13 @@ const userSchema = new Schema({
           .catch(err => reject(err))
         })
       },
-      message: 'Un usuario con el mismo número de teléfono ha sido creado anteriormente'
+      message: "Un usuario con el mismo número de teléfono ha sido creado anteriormente"
     }
   },
   status: {
     type: String,
-    enum : ['PENDIENTE', 'EN PROCESO', 'COMPLETADO'],
-    default : 'PENDIENTE',
+    enum : ["PENDIENTE", "EN PROCESO", "COMPLETADO"],
+    default : "PENDIENTE",
     required: true
   },
   card_number: {
@@ -95,9 +95,9 @@ const userSchema = new Schema({
   }
 }, {
   timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    createdAt: "created_at",
+    updatedAt: "updated_at"
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

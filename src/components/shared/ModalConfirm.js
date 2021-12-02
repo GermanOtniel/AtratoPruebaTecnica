@@ -1,9 +1,9 @@
-import React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const ModalConfirm = ({
   open, handleClose, title,
@@ -14,7 +14,7 @@ const ModalConfirm = ({
     <React.Fragment>
       <Dialog
         fullWidth={true}
-        maxWidth={'xs'}
+        maxWidth={"xs"}
         open={open}
         onClose={handleClose}
       >

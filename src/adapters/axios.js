@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { renderErrorAlertMsg, renderSuccessAlertMsg } from '../util/handleErrors';
+import axios from "axios";
+import { renderErrorAlertMsg, renderSuccessAlertMsg } from "../util/handleErrors";
 
 export const axiosInstance = async (
   method, url, data, setAlert, showSuccessAlert = false
@@ -13,14 +13,14 @@ export const axiosInstance = async (
     if (response?.data?.code === 200) {
       if (
         response?.data?.data?.code !== 200 && 
-        typeof response?.data?.data?.message === 'string'
+        typeof response?.data?.data?.message === "string"
       ) {
         renderErrorAlertMsg(setAlert, response.data.data.message);
       } 
       if (
         response?.data?.data?.code === 200 &&
         !response?.data?.data?.error &&
-        typeof response?.data?.data?.message === 'string' && 
+        typeof response?.data?.data?.message === "string" && 
         showSuccessAlert
       ) {
         renderSuccessAlertMsg(setAlert, response.data.data.message);
@@ -31,6 +31,6 @@ export const axiosInstance = async (
       }
     }
   } catch (error) {
-    renderErrorAlertMsg(setAlert, (error?.message || ''));
+    renderErrorAlertMsg(setAlert, (error?.message || ""));
   }
 };

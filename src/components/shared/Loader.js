@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
-import LoaderContext from '../../contexts/loaderScreen/LoaderContext';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import React, { useContext } from "react";
+import LoaderContext from "../../contexts/loaderScreen/LoaderContext";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 const LoaderComponent = () => {
@@ -9,10 +9,10 @@ const LoaderComponent = () => {
 
   return (
     <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => 1000000000 }}
+      sx={{ color: "#fff", zIndex: (theme) => 1000000000 }}
       open={loaderScreen}
     >
-      <CircularProgress color='inherit' />
+      <CircularProgress color="inherit" />
     </Backdrop>
   );
 };

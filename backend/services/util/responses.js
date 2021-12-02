@@ -8,9 +8,9 @@ const sucess_Ok = response => {
 };
 
 const not_unprocessable_entity = (response) => {
-  return (message = '', data = {}) => {
-    if (message === '') {
-      message = 'Validation error';
+  return (message = "", data = {}) => {
+    if (message === "") {
+      message = "Validation error";
     }
     return res(response, false, 200, true, 422, message, data);
   };
@@ -26,14 +26,14 @@ const internal_server = response => {
 };
 
 const handle_duplicate_errors = (response) => {
-  return (err, msg = 'Internal Server Error') => {
-    if ((err && err.errors) && typeof err.errors === 'object') {
+  return (err, msg = "Internal Server Error") => {
+    if ((err && err.errors) && typeof err.errors === "object") {
       const arrayErrorsMessage = Object.values(err.errors);
       if (arrayErrorsMessage && arrayErrorsMessage.length > 0) {
-        if (arrayErrorsMessage[0]['properties']) {
-          const errors = arrayErrorsMessage[0]['properties'];
+        if (arrayErrorsMessage[0]["properties"]) {
+          const errors = arrayErrorsMessage[0]["properties"];
           const code = 400;
-          const message = 'Por favor revisa los campos marcados en rojo y corrígelos';
+          const message = "Por favor revisa los campos marcados en rojo y corrígelos";
           return res(response, false, 200, true, code, message, { 
             errors: {
               [errors.path]: errors.message

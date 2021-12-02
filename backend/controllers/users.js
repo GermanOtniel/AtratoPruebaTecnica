@@ -1,7 +1,7 @@
-const userModel = require('../models/User');
-const modelResponse = require('../services/util/responses');
-const creditCardService = require('../services/util/external_service');
-const ObjectId = require('mongoose').Types.ObjectId;
+const userModel = require("../models/User");
+const modelResponse = require("../services/util/responses");
+const creditCardService = require("../services/util/external_service");
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const getExpirationDateOfCreditCard = (stringDate) => {
   const date = new Date(stringDate);
@@ -10,14 +10,15 @@ const getExpirationDateOfCreditCard = (stringDate) => {
   return (
     (((month + 1) >= 10) ? 
     (month + 1) : 
-    ('0' + (month + 1))) + '/' + String(year).slice(2, 4)
+    ("0" + (month + 1))) + "/" + String(year).slice(2, 4)
   );
 };
 
 const isValidObjectId = (id) => {
-  if(ObjectId.isValid(id)){
-      if((String)(new ObjectId(id)) === id)
-          return true;        
+  if (ObjectId.isValid(id) && id.length === 24){
+      if ((String)(new ObjectId(id)) === id) {
+        return true;
+      }
       return false;
   }
   return false;
@@ -25,10 +26,10 @@ const isValidObjectId = (id) => {
 
 const getFullNameOfUser = (user) => {
   return `${
-    ((user.first_name ? user.first_name + ' ' : '') || '') + 
-    ((user.second_name ? user.second_name + ' ' : '') || '') +
-    ((user.first_last_name ? user.first_last_name + ' ' : '') || '') +
-    ((user.second_last_name ? user.second_last_name + ' ' : '') || '')
+    ((user.first_name ? user.first_name + " " : "") || "") + 
+    ((user.second_name ? user.second_name + " " : "") || "") +
+    ((user.first_last_name ? user.first_last_name + " " : "") || "") +
+    ((user.second_last_name ? user.second_last_name + " " : "") || "")
   }`
 };
 
@@ -68,13 +69,13 @@ module.exports = {
         pin: creditCard.data.pin,
         exp: getExpirationDateOfCreditCard(creditCard.data.date)
       });
-      return modelResponse.sucess_Ok(res)('Usuario creado correctamente', {
+      return modelResponse.sucess_Ok(res)("Usuario creado correctamente", {
         user: userCreated
       });
     } catch (error) {
       return modelResponse.handle_duplicate_errors(res)(
         error, 
-        typeof error === 'string' ? error : ''
+        typeof error === "string" ? error : ""
       );
     }
   },
@@ -112,9 +113,9 @@ module.exports = {
         phone_number: req.body.phone_number,
         status: req.body.status,
       }
-    }, { runValidators: true, context: 'query' })
+    }, { runValidators: true, context: "query" })
     .then((result) => {
-      return modelResponse.sucess_Ok(res)('Usuario actualizado correctamente', {
+      return modelResponse.sucess_Ok(res)("Usuario actualizado correctamente", {
         user: result
       });
     })
@@ -131,13 +132,13 @@ module.exports = {
    * **/
    getOldest(req, res) {
     return userModel.findOne({ 
-      status: 'PENDIENTE'
+      status: "PENDIENTE"
     }, 
     {}, 
-    { sort: { 'created_at' : 1 } })
-    .select('_id first_name first_last_name created_at')
+    { sort: { "created_at" : 1 } })
+    .select("_id first_name first_last_name created_at")
     .then((result) => {
-      return modelResponse.sucess_Ok(res)('Usuario rezagado', {
+      return modelResponse.sucess_Ok(res)("Usuario rezagado", {
         user: result
       });
     })
@@ -161,21 +162,21 @@ module.exports = {
   getAllPerPage(req, res) {
     let where = {};
     if (req.query.search) {
-      where['$or'] = [
-        { first_name: new RegExp(req.query.search, 'i') },
-        { second_name: new RegExp(req.query.search, 'i') },
-        { first_last_name: new RegExp(req.query.search, 'i') },
-        { second_last_name: new RegExp(req.query.search, 'i') },
-        { email: new RegExp(req.query.search, 'i') },
-        { phone_number: new RegExp(req.query.search, 'i') },
-        { f_name: new RegExp(req.query.search, 'i') }
+      where["$or"] = [
+        { first_name: new RegExp(req.query.search, "i") },
+        { second_name: new RegExp(req.query.search, "i") },
+        { first_last_name: new RegExp(req.query.search, "i") },
+        { second_last_name: new RegExp(req.query.search, "i") },
+        { email: new RegExp(req.query.search, "i") },
+        { phone_number: new RegExp(req.query.search, "i") },
+        { f_name: new RegExp(req.query.search, "i") }
       ]
-      if (isValidObjectId(req.query.search)) where['$or'].push({
+      if (isValidObjectId(req.query.search)) where["$or"].push({
         _id: new ObjectId(req.query.search)
       })
     }
     if (req.query.status) {
-      where['status'] = req.query.status;
+      where["status"] = req.query.status;
     }
     let pagination = {
       skip: (
@@ -188,13 +189,13 @@ module.exports = {
     .skip(pagination.skip)
     .limit(pagination.limit)
     .populate({
-      path: 'analist_id',
-      select:'full_name'
+      path: "analist_id",
+      select:"full_name"
     })
     .then(async (result) => {
       const total = await userModel.countDocuments(where);
       const allTotal = await userModel.countDocuments();
-      return modelResponse.sucess_Ok(res)('Listado de usuarios', {
+      return modelResponse.sucess_Ok(res)("Listado de usuarios", {
         rows: result, total, allTotal
       });
     })
@@ -211,7 +212,7 @@ module.exports = {
      delete(req, res) {
       return userModel.findOneAndRemove({ _id: req.params.id })
       .then((result) => {
-        return modelResponse.sucess_Ok(res)('Usuario eliminado correctamente', {
+        return modelResponse.sucess_Ok(res)("Usuario eliminado correctamente", {
           user: result
         });
       })
